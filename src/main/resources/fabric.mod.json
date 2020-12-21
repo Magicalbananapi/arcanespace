@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "arcanespace",
+  "version": "0.4.0",
+  "name": "Arcane Space",
+  "description": "Arcane Space is a magic mod for fabric while also being my first real minecraft mod (Not counting bad MCreator mods I've made).\nIt is an attempt at recreating both starminer and galacticraft styled gravity in an environment that makes a certain amount of sense, alongside other spatial manipulation such as portals and pocket dimensions.\nGoing with this theme, future plans may include an attempt at creating non-euclidean space to a small extent and possibly a separate library mod to make including gravity-related mechanics into mods significantly easier for developers(or you could just stea-*cough* borrow my code instead...).\nArcane Space plans to support gravity for both block entities and entities, however as of now block entities would require a massive rewrite so no promises.",
+
+  "authors": [
+    "Magicalbananapie"
+  ],
+  "contact": {
+    "website": "https://magicalbananapie.github.io",
+    "repo": "https://github.com/Magicalbananapie/ArcaneSpace"
+  },
+  "license": "MIT",
+  "icon": "assets/arcanespace/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "io.github.magicalbananapie.arcanespace.ArcaneSpaceClient"
+    ],
+    "main": [
+      "io.github.magicalbananapie.arcanespace.ArcaneSpace"
+    ],
+    "modmenu": [
+      "io.github.magicalbananapie.arcanespace.integration.ArcaneModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "arcanespace.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.10.7",
+    "fabric": "*",
+    "autoconfig1u": ">=2.0.0",
+    "minecraft": "1.16.4"
+  }
+}

@@ -1,0 +1,21 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"barrier": "arcanespace:block/gravity_barrier",
+		"particle": "arcanespace:block/gravity_barrier"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"north": {"uv": [0, 13, 16, 15], "texture": "#barrier", "cullface": "north"},
+				"east": {"uv": [0, 1, 16, 3], "texture": "#barrier", "cullface": "east"},
+				"south": {"uv": [0, 13, 16, 15], "texture": "#barrier", "cullface": "south"},
+				"west": {"uv": [0, 1, 16, 3], "texture": "#barrier", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#barrier"},
+				"down": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#barrier", "cullface": "down"}
+			}
+		}
+	]
+}

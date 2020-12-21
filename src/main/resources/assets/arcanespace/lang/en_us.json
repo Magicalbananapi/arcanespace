@@ -1,0 +1,105 @@
+{
+  "text.autoconfig.arcanespace.title": "Arcane Space Configuration",
+
+  "text.autoconfig.arcanespace.option.oppositeFallDistanceMultiplier": "Reversed Fall Distance Multiplier",
+  "text.autoconfig.arcanespace.option.oppositeFallDistanceMultiplier.@Tooltip[0]": "When an entity's gravity direction changes to be Upside Down,",
+  "text.autoconfig.arcanespace.option.oppositeFallDistanceMultiplier.@Tooltip[1]": "their total fall distance will be multiplied by this value.",
+
+  "text.autoconfig.arcanespace.option.otherFallDistanceMultiplier": "Sideways Fall Distance Multiplier",
+  "text.autoconfig.arcanespace.option.otherFallDistanceMultiplier.@Tooltip[0]": "When an entity's gravity direction changes to be Sideways,",
+  "text.autoconfig.arcanespace.option.otherFallDistanceMultiplier.@Tooltip[1]": "their total fall distance will be multiplied by this value.",
+
+  "text.autoconfig.arcanespace.option.transitionEnabled": "Gravity Transition",
+  "text.autoconfig.arcanespace.option.transitionEnabled.@Tooltip[0]": "Determines whether the gradual gravity transition is enabled.",
+  "text.autoconfig.arcanespace.option.transitionEnabled.@Tooltip[1]": "True by default. False is instant and may fix some bugs.",
+
+  "text.autoconfig.arcanespace.option.rotationAnimationSpeed": "Rotation Animation Speed",
+  "text.autoconfig.arcanespace.option.rotationAnimationSpeed.@Tooltip[0]": "Animation speed for gravity transition.",
+  "text.autoconfig.arcanespace.option.rotationAnimationSpeed.@Tooltip[1]": "Takes 1 second divided by this config value.",
+
+  "text.autoconfig.arcanespace.option.rotationAnimationLength": "Rotation Animation Length",
+  "text.autoconfig.arcanespace.option.rotationAnimationLength.@Tooltip": "Defines how long in ticks gravity rotations take.",
+
+  "text.autoconfig.arcanespace.option.rotationAnimationEnd": "Rotation Animation End",
+  "text.autoconfig.arcanespace.option.rotationAnimationEnd.@Tooltip": "Extra ticks after rotation where gravity is locked.",
+
+  "text.autoconfig.arcanespace.option.gFieldSize": "G-Field Size",
+  "text.autoconfig.arcanespace.option.gFieldSize.@Tooltip": "Defines the default size of G-Fields from a gravity focus.",
+
+  "text.autoconfig.arcanespace.option.voidConfig": "Upper-Void Configuration",
+  "text.autoconfig.arcanespace.option.voidConfig.@Tooltip[0]": "Extra configuration settings that control the upper-void in space.",
+  "text.autoconfig.arcanespace.option.voidConfig.@Tooltip[1]": "This kills entities to prevent them from falling upwards forever.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.noAirHeight": "Asphyxiation Height",
+  "text.autoconfig.arcanespace.option.voidConfig.noAirHeight.@Tooltip[0]": "Entities above this height gain an effect which makes them lose air,",
+  "text.autoconfig.arcanespace.option.voidConfig.noAirHeight.@Tooltip[1]": "Damage sustained is different from drowning, but undead are unaffected.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.bubblesAidAsphyxiation": "Bubbles Aid Asphyxiation",
+  "text.autoconfig.arcanespace.option.voidConfig.bubblesAidAsphyxiation.@Tooltip[0]": "Allows bubble columns to restore air to those with asphyxiation,",
+  "text.autoconfig.arcanespace.option.voidConfig.bubblesAidAsphyxiation.@Tooltip[1]": "False by default as I wanted Asphyxiation different from drowning.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.freezingHeight": "Freezing Height",
+  "text.autoconfig.arcanespace.option.voidConfig.freezingHeight.@Tooltip[0]": "Entities above this height will get a freezing effect applied.",
+  "text.autoconfig.arcanespace.option.voidConfig.freezingHeight.@Tooltip[1]": "Currently, this effect only obscures the player's view.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.bloodBoilHeight": "BloodBoil Height",
+  "text.autoconfig.arcanespace.option.voidConfig.bloodBoilHeight.@Tooltip[0]": "Entities above this height gain an effect which mimics",
+  "text.autoconfig.arcanespace.option.voidConfig.bloodBoilHeight.@Tooltip[1]": "the rapid damage from falling out of the world.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.instantDeathHeight": "Instant Death Height",
+  "text.autoconfig.arcanespace.option.voidConfig.instantDeathHeight.@Tooltip": "Entities above this height die instantly.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.ticksUntilFullyFrozen": "Ticks Until Fully Frozen",
+  "text.autoconfig.arcanespace.option.voidConfig.ticksUntilFullyFrozen.@Tooltip[0]": "Number of ticks it takes for the freezing screen effect",
+  "text.autoconfig.arcanespace.option.voidConfig.ticksUntilFullyFrozen.@Tooltip[1]": "to reach maximum opacity. 1 tick = 1/20th of a second.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.bloodBoilDamage": "BloodBoil Damage",
+  "text.autoconfig.arcanespace.option.voidConfig.bloodBoilDamage.@Tooltip[0]": "Damage taken each tick while blood is boiling.",
+  "text.autoconfig.arcanespace.option.voidConfig.bloodBoilDamage.@Tooltip[1]": "4 would be the same as falling out of the bottom of the world.",
+
+  "text.autoconfig.arcanespace.option.voidConfig.spaceHurtsCreative": "Space Kills Gods",
+  "text.autoconfig.arcanespace.option.voidConfig.spaceHurtsCreative.@Tooltip[0]": "Determines whether the upper void can hurt creative players or not,",
+  "text.autoconfig.arcanespace.option.voidConfig.spaceHurtsCreative.@Tooltip[1]": "Set to true by default to mimic void damage when falling towards it.",
+
+  "text.autoconfig.arcanespace.option.gravityDirection": "World Gravity Direction",
+  "text.autoconfig.arcanespace.option.gravityDirection.@Tooltip[0]": "Determines default gravity DIRECTION, 0 by default (DOWN)",
+  "text.autoconfig.arcanespace.option.gravityDirection.@Tooltip[1]": "0=DOWN, 1=UP, 2=NORTH, 3=SOUTH, 4=EAST, 5=WEST, otherwise DOWN",
+
+  "text.autoconfig.arcanespace.option.gravityStrength": "World Gravity Strength",
+  "text.autoconfig.arcanespace.option.gravityStrength.@Tooltip[0]": "Determines default gravity STRENGTH, 1.0 by default (100%)",
+  "text.autoconfig.arcanespace.option.gravityStrength.@Tooltip[1]": "100*[THIS]=percent of default minecraft gravity, 1=100%",
+  "text.autoconfig.arcanespace.option.gravityStrength.@Tooltip[2]": "Ex: 1=100%, 2=200%, 100=10000%, 0.5=50%, and 0.0 is Zero-G",
+
+  "text.autoconfig.arcanespace.option.visualConfig": "Visual Config",
+  "text.autoconfig.arcanespace.option.visualConfig.@Tooltip[0]": "Extra Config Options related to how things display.",
+  "text.autoconfig.arcanespace.option.visualConfig.@Tooltip[1]": "Due to their nature, these options can be changed",
+  "text.autoconfig.arcanespace.option.visualConfig.@Tooltip[2]": "without restarting the game, so try them all!",
+  "text.autoconfig.arcanespace.option.visualConfig.@Tooltip[3]": "Also includes extra visual features I couldn't fit in.",
+
+  "text.autoconfig.arcanespace.option.visualConfig.sphereEnabled": "Spherical Singularity",
+  "text.autoconfig.arcanespace.option.visualConfig.sphereEnabled.@Tooltip[0]": "Determines the model type of the singularity in Gravity Foci.",
+  "text.autoconfig.arcanespace.option.visualConfig.sphereEnabled.@Tooltip[1]": "True is Spherical and False is Cubic. Set to False(Cubic) by",
+  "text.autoconfig.arcanespace.option.visualConfig.sphereEnabled.@Tooltip[2]": "default as I feel spheres don't fit Minecraft's art style.",
+
+  "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity": "Focal Complexity",
+  "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[0]": "Determines the complexity of spherical gravity foci.",
+  "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[1]": "This option exists for performance reasons, and when set",
+  "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[2]": "to either a negative value or 0, the singularity is disabled.",
+  "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[3]": "Lower numbers are faster, Higher are slower; 6 is the default.",
+
+  "text.autoconfig.arcanespace.option.debugMode": "Debug Mode",
+  "text.autoconfig.arcanespace.option.debugMode.@Tooltip": "Enables debug mode, you don't need this.",
+
+  "effect.arcanespace.asphyxiation": "Asphyxiation",
+  "effect.arcanespace.freezing": "Freezing",
+  "effect.arcanespace.bloodboil": "BloodBoil",
+
+  "death.attack.asphyxiation": "%1$s ran out of air.",
+  "death.attack.bloodboil": "%1$s discovered blood boils in space.",
+  "death.attack.outerspace": "%1$s forgot to wear a spacesuit.",
+
+  "itemGroup.arcanespace.gravitytoken": "Arcane Space",
+  "item.arcanespace.gravity_token": "Graviton Focus",
+  "block.arcanespace.gravity_panel": "Gravity Panel",
+  "block.arcanespace.gravity_focus": "Gravity Focus"
+}

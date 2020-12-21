@@ -1,0 +1,6 @@
+{	"parent": "block/cube_all",
+	"textures": {
+		"all": "arcanespace:block/gravity_barrier",
+		"particle": "arcanespace:block/gravity_barrier"
+	}
+}

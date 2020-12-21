@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up":    { "model": "arcanespace:block/gravity_panel_v" },
+    "facing=down":  { "model": "arcanespace:block/gravity_panel_v", "x": 180 },
+    "facing=north": { "model": "arcanespace:block/gravity_panel", "x": 90 },
+    "facing=east":  { "model": "arcanespace:block/gravity_panel", "x": 90, "y": 90 },
+    "facing=south": { "model": "arcanespace:block/gravity_panel", "x": 90, "y": 180 },
+    "facing=west":  { "model": "arcanespace:block/gravity_panel", "x": 90, "y": 270 }
+  }
+}
