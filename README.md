@@ -36,6 +36,7 @@ Future Plans(Once the previously mentioned steps are completed):
 - Work on parts of the magic system unrelated to gravity or at least develop the idea for the magic system
 - Look into increasing performance and rewriting again
 - Seperate Gravity into a Library to make it easier to use in other mods(of mine and other people's like FluxTech)
+- Rebuild the config from the ground up without using an external library (I want to make it more fancy)
 
 Up and Down and All Around
 Starminer
