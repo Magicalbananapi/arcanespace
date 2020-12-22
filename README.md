@@ -7,4 +7,4 @@ As such I might completely change the direction of it later on and absolutely no
 
 I should note I aim to make this mod feel relatively vanilla-like in it's default state, so things like gravity direction 
 will stay limited to the 6 directions supported by vanilla minecraft or visuals will use blocky models by default, although the config
-might have options to enable less vanilla-like features like the sphereical singularities I currently have implemented.
+might have options to enable less vanilla-like features like the spherical singularities I currently have implemented.
