@@ -161,7 +161,7 @@ public class GravityFocusRenderer extends BlockEntityRenderer<BlockEntityGravity
         }
     }
 
-    public static RenderLayer getEndPortal(int layer) { //THIS IS BAD, BUT DISPOSE OF IT LATER
+    public static RenderLayer getEndPortal(int layer) { //THIS IS BAD, BUT DISPOSE OF IT LATER (Make a better RenderLayer)
         //NOTICE: I WILL remove this AWFUL code later, but I need it for now to understand what I need and start the game
         RenderPhase.Transparency ADDITIVE_TRANSPARENCY = new RenderPhase.Transparency("additive_transparency", () -> {
             RenderSystem.enableBlend();
@@ -188,6 +188,7 @@ public class GravityFocusRenderer extends BlockEntityRenderer<BlockEntityGravity
         RenderPhase.Texture texture2;
         if (layer <= 1) {
             transparency2 = TRANSLUCENT_TRANSPARENCY;
+            //This makes layer 0 the background of the End Sky
             texture2 = new RenderPhase.Texture(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false);
         } else {
             transparency2 = ADDITIVE_TRANSPARENCY;

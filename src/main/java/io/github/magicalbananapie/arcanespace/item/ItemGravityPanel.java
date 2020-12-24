@@ -29,4 +29,6 @@ public class ItemGravityPanel extends BlockItem {
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         tooltip.add(new LiteralText("Can be placed").setStyle(Style.EMPTY.withItalic(true).withColor(Formatting.GRAY)));
     }
+
+
 }

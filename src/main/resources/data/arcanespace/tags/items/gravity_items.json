@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "arcanespace:gravity_focus",
+    "arcanespace:singularity",
+    "arcanespace:gravity_panel"
+  ]
+}
