@@ -87,6 +87,13 @@
   "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[2]": "to either a negative value or 0, the singularity is disabled.",
   "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[3]": "Lower numbers are faster, Higher are slower; 6 is the default.",
 
+  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled": "Shadow Effect",
+  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled.@Tooltip": "Determines if the shadow effect displays.",
+
+  "text.autoconfig.arcanespace.option.visualConfig.pixelatedShadow": "Pixelated Shadow",
+  "text.autoconfig.arcanespace.option.visualConfig.pixelatedShadow.@Tooltip": "Determines if the shadow effect is pixelated.",
+
+
   "text.autoconfig.arcanespace.option.debugMode": "Debug Mode",
   "text.autoconfig.arcanespace.option.debugMode.@Tooltip": "Enables debug mode, you don't need this.",
 

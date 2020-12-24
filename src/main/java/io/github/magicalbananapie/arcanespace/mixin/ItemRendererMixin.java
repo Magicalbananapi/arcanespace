@@ -2,11 +2,13 @@ package io.github.magicalbananapie.arcanespace.mixin;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.magicalbananapie.arcanespace.ArcaneConfig;
 import io.github.magicalbananapie.arcanespace.ArcaneSpace;
 import io.github.magicalbananapie.arcanespace.item.ArcaneItems;
 import io.github.magicalbananapie.arcanespace.renderer.ArcaneSprites;
 import io.github.magicalbananapie.arcanespace.renderer.GravityFocusItemRenderer;
 import io.github.magicalbananapie.arcanespace.util.ArcaneTags;
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
@@ -41,6 +43,8 @@ import java.util.Random;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
+    @Unique private static final ArcaneConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig();
+
     @Shadow @Final private ItemModels models;
 
     @Shadow protected abstract void renderBakedItemModel(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrices, VertexConsumer vertexConsumer4);
@@ -52,8 +56,11 @@ public abstract class ItemRendererMixin {
         if(!stack.isEmpty()) {
             //NOTICE: This is an Avaritia-like item background, this was a pain to implement and took many, many revisions
             //TODO: This probably needs to be 24x24 instead of 20x20, also the itemRenderer needs to be added to the singularity
-            if(stack.getItem().isIn(ArcaneTags.GRAVITY) && renderMode == ModelTransformation.Mode.GUI) {
+            //FIXME: There is a visual bug when selecting multiple items with drag-right-click due to this and the white square
+            //FIXME: The shadow seems to cause some of the gui rendering to disappear
+            if(stack.getItem().isIn(ArcaneTags.GRAVITY) && renderMode == ModelTransformation.Mode.GUI && config.visualConfig.shadowEnabled) {
                 matrices.push();
+
                 matrices.translate(-0.5D, -0.5D, -1.0D); //-0.5 z is in the center, but that clips into blocks
                 MatrixStack.Entry entry = matrices.peek();
                 Matrix4f matrix4f = entry.getModel();
@@ -68,9 +75,9 @@ public abstract class ItemRendererMixin {
                 RenderSystem.disableLighting();
                 RenderSystem.disableAlphaTest();
 
-                VertexConsumer buffer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(new Identifier(ArcaneSpace.MOD_ID,"textures/gui/effect/blur.png")));
+                VertexConsumer buffer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(config.visualConfig.pixelatedShadow ? new Identifier(ArcaneSpace.MOD_ID,"textures/gui/effect/blur_old.png") : new Identifier(ArcaneSpace.MOD_ID,"textures/gui/effect/blur.png")));
 
-                float offset = 1/4F; //24 Pixels (16+(1/4)*16*2) Fun Fact: this fits perfectly inside item frames
+                float offset = 1/8F; //20 Pixels (16+(1/8)*16*2) Fun Fact: this fits perfectly inside item frames
                 buffer.vertex(matrix4f, 0f-offset,1f+offset,0.5F).color(1f,1f,1f,1f).texture(0f,0f).overlay(overlay).light(light).normal(vector3f.getX(), vector3f.getY(), vector3f.getZ()).next();
                 buffer.vertex(matrix4f, 1f+offset,1f+offset,0.5F).color(1f,1f,1f,1f).texture(0f,1f).overlay(overlay).light(light).normal(vector3f.getX(), vector3f.getY(), vector3f.getZ()).next();
                 buffer.vertex(matrix4f, 1f+offset,0f-offset,0.5F).color(1f,1f,1f,1f).texture(1f,1f).overlay(overlay).light(light).normal(vector3f.getX(), vector3f.getY(), vector3f.getZ()).next();

@@ -83,6 +83,12 @@ public class ArcaneConfig implements ConfigData {
 
         @ConfigEntry.Gui.Tooltip(count = 4)
         public int sphereComplexity = 6;
+
+        @ConfigEntry.Gui.Tooltip()
+        public boolean shadowEnabled = true;
+
+        @ConfigEntry.Gui.Tooltip()
+        public boolean pixelatedShadow = false;
     }
 
     @ConfigEntry.Gui.Tooltip
