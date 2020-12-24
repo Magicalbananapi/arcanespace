@@ -28,20 +28,18 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.IntStream;
 
 //TODO: Rework this again, it still doesn't look good enough
 public class GravityFocusRenderer extends BlockEntityRenderer<BlockEntityGravityFocus> {
-    ArcaneConfig.VisualConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig().visualConfig;
-    private static final SpriteIdentifier CORE_TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier(ArcaneSpace.MOD_ID,"entity/gravity_core"));
+    private static final SpriteIdentifier CORE_TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, ArcaneSprites.CORE_PATH);
     private static final Sprite CORE_SPRITE = CORE_TEXTURE.getSprite();
+    ArcaneConfig.VisualConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig().visualConfig;
     private static final List<RenderLayer> renderLayers = IntStream.range(0, 4).mapToObj(
             (i) -> getEndPortal(i + 1)).collect(ImmutableList.toImmutableList());
     private static final Random RANDOM = new Random(31100L);
-    private final ModelPart core = new ModelPart(32, 16, 0, 0);; //black cube that should be able to change size.
+    private final ModelPart core = new ModelPart(32, 16, 0, 0); //black cube that should be able to change size.
     //private final ModelPart eventHorizon = new ModelPart(64, 32, 0, 0);; //Might go unused, but would be an extra visual layer around core, charged creeper texture
     private static final List<Vector3f> vertices = new ArrayList<>();
     private static final List<Vector3f> uvs = new ArrayList<>();

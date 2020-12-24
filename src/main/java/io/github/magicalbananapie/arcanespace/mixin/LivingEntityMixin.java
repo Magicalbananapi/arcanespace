@@ -24,6 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LivingEntityMixin implements LivingEntityAccessor {
     private final ArcaneConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig();
 
+    //this.setVelocity(this.applyClimbingSpeed(this.getVelocity())); to change how climbing works at least partially
+
     @Unique public int freezeTime;
     @Unique @Override public int getFreezeTime() { return freezeTime; }
     @Unique @Override public void setFreezeTime(int freezeTime) { this.freezeTime = freezeTime; }

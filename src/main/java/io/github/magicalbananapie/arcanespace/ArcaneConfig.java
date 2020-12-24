@@ -31,6 +31,10 @@ public class ArcaneConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public int gFieldSize = 8;
 
+    //Planetoids should be added to a space dimension, each with their own gravity focus in the center, gen config needed
+    //Maybe use structures to generate rare planetoids that have either prebuilt features, dungeons, or complex gravity fields,
+    //Also, apparently the portal testing chambers ARE in space :) [I can't wait until I can start work on stuff like this]
+
     @ConfigEntry.Gui.Tooltip(count = 2)
     @ConfigEntry.Gui.CollapsibleObject
     public VoidConfig voidConfig = new VoidConfig();

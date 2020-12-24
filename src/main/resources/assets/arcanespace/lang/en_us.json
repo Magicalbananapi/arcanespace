@@ -98,8 +98,8 @@
   "death.attack.bloodboil": "%1$s discovered blood boils in space.",
   "death.attack.outerspace": "%1$s forgot to wear a spacesuit.",
 
-  "itemGroup.arcanespace.gravitytoken": "Arcane Space",
-  "item.arcanespace.gravity_token": "Graviton Focus",
+  "itemGroup.arcanespace.singularity": "Arcane Space",
+  "item.arcanespace.singularity": "Singularity",
   "block.arcanespace.gravity_panel": "Gravity Panel",
   "block.arcanespace.gravity_focus": "Gravity Focus"
 }

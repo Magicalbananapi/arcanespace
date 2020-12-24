@@ -13,6 +13,9 @@ import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.PITCH;
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.YAW;
@@ -39,16 +42,8 @@ public abstract class EntityMixin implements EntityAccessor {
     @Override
     public void setGravity(Entity entity, Gravity gravity) { this.gravity = gravity; }
 
-    @Override
-    public void setGravityDirection(Entity entity, GravityEnum gravityDirection) { this.gravity.setGravityDirection(entity, gravityDirection); }
-
-    @Override
-    public void setTemporaryDirection(Entity entity, GravityEnum gravityDirection, int length) {
-        this.gravity.setTemporaryGravityDirection(entity, gravityDirection, length);
-    }
-
-    @Override
-    public void setGravityStrength(Entity entity, float gravityStrength) { this.gravity.setGravityStrength(entity, gravityStrength); }
+    @Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;tickNetherPortal()V"))
+    private void baseTick(CallbackInfo ci) { if (this.gravity.getLength() > 0) this.gravity.tick(); }
 
     //@Shadow public void method_30634(double x, double y, double z) {}
 
@@ -60,7 +55,7 @@ public abstract class EntityMixin implements EntityAccessor {
     @Environment(EnvType.CLIENT)
     @Overwrite public void changeLookDirection(double yaw, double pitch) {
         final double[] relativePitchYaw = Vec3dHelper.getPrecisePitchAndYawFromVector(
-                this.getGravity().getGravityDirection().getInverseAdjustmentFromDOWNDirection().adjustLookVec(
+                this.getGravity().getGravityDirection().getOpposite().adjustLookVec(
                         Vec3dHelper.getPreciseVectorForRotation(this.pitch, this.yaw)));
 
         final double changedRelativeYaw = relativePitchYaw[YAW] + (yaw * 0.15d);

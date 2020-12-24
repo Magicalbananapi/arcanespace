@@ -28,8 +28,8 @@ public class ArcaneSpace implements ModInitializer {
     public static final String MOD_NAME = "Arcane Space";
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME, StringFormatterMessageFactory.INSTANCE);
 
-    public static final ItemGroup TOKEN_GROUP = FabricItemGroupBuilder.create(id("gravitytoken"))
-            .icon(() -> new ItemStack(ArcaneItems.ARCANE_TOKEN)).build();
+    public static final ItemGroup GRAVITY_GROUP = FabricItemGroupBuilder.create(id("singularity"))
+            .icon(() -> new ItemStack(ArcaneItems.SINGULARITY)).build();
 
     public static boolean DEBUG_MODE;
 

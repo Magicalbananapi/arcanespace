@@ -17,6 +17,7 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -103,19 +104,19 @@ public class BlockGravityPanel extends FacingBlock implements Waterloggable {
     @Override
     @SuppressWarnings("deprecation")
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        Gravity gravity = ((EntityAccessor) entity).getGravity();
+        Gravity gravity = ((EntityAccessor)entity).getGravity();
         //NOTICE: Until I can get block to entity collision working, this isn't a bug, its the feature of
         // every gravity panel block creating a 1x1x1 block G-Field towards it. :)
         entity.fallDistance = 0.0F;
         switch (state.get(Properties.FACING)) {
             //Here Directions are inverted because the block is FACING the said direction, not actually going that way,
             // AKA the direction of the top of the block to the bottom is the direction of gravity :)
-            case UP: { gravity.setTemporaryGravityDirection(entity, 0, Gravity.DEFAULT_LENGTH); break; }
-            case DOWN: { gravity.setTemporaryGravityDirection(entity, 1, Gravity.DEFAULT_LENGTH); break; }
-            case SOUTH: { gravity.setTemporaryGravityDirection(entity, 2, Gravity.DEFAULT_LENGTH); break; }
-            case NORTH: { gravity.setTemporaryGravityDirection(entity, 3, Gravity.DEFAULT_LENGTH); break; }
-            case WEST: { gravity.setTemporaryGravityDirection(entity, 4, Gravity.DEFAULT_LENGTH); break; }
-            case EAST: { gravity.setTemporaryGravityDirection(entity, 5, Gravity.DEFAULT_LENGTH); break; }
+            case UP: { gravity.setGravityDirection(entity, 0, Gravity.DEFAULT_LENGTH, false); break; }
+            case DOWN: { gravity.setGravityDirection(entity, 1, Gravity.DEFAULT_LENGTH, false); break; }
+            case SOUTH: { gravity.setGravityDirection(entity, 2, Gravity.DEFAULT_LENGTH, false); break; }
+            case NORTH: { gravity.setGravityDirection(entity, 3, Gravity.DEFAULT_LENGTH, false); break; }
+            case WEST: { gravity.setGravityDirection(entity, 4, Gravity.DEFAULT_LENGTH, false); break; }
+            case EAST: { gravity.setGravityDirection(entity, 5, Gravity.DEFAULT_LENGTH, false); break; }
         }
     }
 }

@@ -8,8 +8,9 @@
     "LivingEntityMixin"
   ],
   "client": [
-    "InGameHudMixin",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "ItemRendererMixin",
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

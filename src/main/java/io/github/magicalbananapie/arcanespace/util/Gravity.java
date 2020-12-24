@@ -10,13 +10,15 @@ import org.spongepowered.asm.mixin.Unique;
 
 public class Gravity {
     private static final ArcaneConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig();
-    public static final int DEFAULT_LENGTH = 15;
+    public static final int DEFAULT_LENGTH= 15; //Ticks before rotation can happen again
 
-    private GravityEnum defaultDirection;
-    private GravityEnum temporaryDirection;
+    //FIXME: I made a LOT of mistakes setting up gravityDirection, this is going to take some time to fix
+    private final GravityEnum defaultDirection; //TODO: Make this dimension specific, AKA make dimensions store this
+    private GravityEnum previousDirection, currentDirection;
     private float gravityStrength;
     private int length; //Decrement each tick if greater than 0
     private float transitionAngle;
+    private boolean hasTransitionAngle = false;
     private Vec3d oldEyePos;
     private Vec3d eyePosChangeVec = Vec3d.ZERO;
 
@@ -29,88 +31,68 @@ public class Gravity {
 
     public Gravity() {
         final ArcaneConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig();
-        this.defaultDirection = this.temporaryDirection = GravityEnum.get(config.gravityDirection);
+        this.previousDirection = this.currentDirection = this.defaultDirection  = GravityEnum.get(config.gravityDirection);
         this.gravityStrength = config.gravityStrength; //1F represents 100% default minecraft gravity
     }
 
-    public void setTemporaryGravityDirection(Entity entity, int id, int length) {
-        oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
-        this.temporaryDirection = GravityEnum.get(id);
-        this.length = length;
-        gravityChangeEffects(entity, GravityEnum.get(id));
+    public void setGravityDirection(Entity entity, int id, int length, boolean override) {
+        setGravityDirection(entity, GravityEnum.get(id), length,  override);
     }
-    public void setTemporaryGravityDirection(Entity entity, GravityEnum newDirection, int length) {
-        oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
-        this.temporaryDirection = newDirection;
-        this.length = length;
-        gravityChangeEffects(entity, newDirection);
+    public void setGravityDirection(Entity entity, GravityEnum newDirection, int length, boolean override) {
+        if(override||!newDirection.equals(this.currentDirection)&&this.length<=0) {
+            this.oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
+            this.previousDirection = this.currentDirection;
+            this.currentDirection = newDirection;
+            this.length = length;
+            gravityChangeEffects(entity, newDirection);
+        } else if(newDirection.equals(this.currentDirection)) this.length = length;
+        //else alone was (!override && newDirection.equals(temporaryDirection) || this.length>0)
     }
 
+    public boolean hasTransitionAngle() { return this.hasTransitionAngle; }
+
     private void gravityChangeEffects(Entity entity, GravityEnum newDirection) {
-        if (defaultDirection != newDirection) {
+        this.transitionAngle = 0;
+        this.hasTransitionAngle = false;
+        if (this.previousDirection != newDirection) {
             this.prevTurnRate = this.turnRate = 0.0F;
             this.onChangeRoatDirX = 0.0F;
             this.onChangeRoatDirY = 0.0F;
             this.onChangeRoatDirZ = 0.0F;
-            if (defaultDirection.getInverseAdjustmentFromDOWNDirection() == newDirection) {
+            if (this.previousDirection.getOpposite() == newDirection)
                 entity.fallDistance *= config.oppositeFallDistanceMultiplier;
-            } else {
-                entity.fallDistance *= config.otherFallDistanceMultiplier;
-            }
+            else entity.fallDistance *= config.otherFallDistanceMultiplier;
         }
 
         if (entity.world.isClient) {
             Vec3d newEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
-
-            Vec3d eyesDiff = newEyePos.subtract(oldEyePos);
-
+            Vec3d eyesDiff = newEyePos.subtract(this.oldEyePos);
             setEyePosChangeVector(eyesDiff);
         }
     }
 
-    @NotNull
-    public Vec3d getEyePosChangeVector() {
-        return this.eyePosChangeVec;
-    }
+    @NotNull public Vec3d getEyePosChangeVector() { return this.eyePosChangeVec; }
+    public void setEyePosChangeVector(@NotNull Vec3d vec3d) { this.eyePosChangeVec = vec3d; }
 
-    public void setEyePosChangeVector(@NotNull Vec3d vec3d) {
-        this.eyePosChangeVec = vec3d;
-    }
+    public int getLength() { return this.length; }
+    public void tick() { --this.length; }
 
-    public float getTransitionAngle() {
-        return transitionAngle;
-    }
-
+    public float getTransitionAngle() { return this.transitionAngle; }
     public void setTransitionAngle(float transitionAngle) {
         this.transitionAngle = transitionAngle;
+        this.hasTransitionAngle = true;
     }
 
-    public int getLength() { return length; }
-    public void setLength(int length) { this.length = length; }
-
-    public void updateDefaultDirection() { this.defaultDirection = this.temporaryDirection; }
     public void revertGravityDirection(Entity entity) {
-        oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
-        this.temporaryDirection = this.defaultDirection;
-        gravityChangeEffects(entity, defaultDirection);
+        this.oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
+        this.currentDirection = this.defaultDirection;
+        gravityChangeEffects(entity, this.defaultDirection);
     }
-
-    public void setGravityDirection(Entity entity, int id) {
-        oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
-        this.defaultDirection = this.temporaryDirection = GravityEnum.get(id);
-        gravityChangeEffects(entity, GravityEnum.get(id));
-    }
-    public void setGravityDirection(Entity entity, GravityEnum newDefault) {
-        oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
-        this.defaultDirection = this.temporaryDirection = newDefault;
-        gravityChangeEffects(entity, newDefault);
-    }
-    public GravityEnum getGravityDirection() { return temporaryDirection; }
-
+    public GravityEnum getPreviousDirection() { return this.previousDirection; }
+    public GravityEnum getGravityDirection() { return this.currentDirection; }
     public GravityEnum getDefaultDirection() { return this.defaultDirection; }
-    public void setDefaultDirection(GravityEnum defaultDirection) { this.defaultDirection = defaultDirection; }
 
-    public float getGravityStrength() { return gravityStrength; }
+    public float getGravityStrength() { return this.gravityStrength; }
     public void setGravityStrength(Entity entity, float strength) { this.gravityStrength = strength; }
 }
 
@@ -118,4 +100,5 @@ public class Gravity {
 // This is so game breaking that it MUST be toggleable in config
 //TODO: Gravity focus is highly dependant on upcoming tinted glass and amethyst textures and therefore makes sense
 // that it would incorporate them into its crafting recipe. :)
-// Also because of what the gravity focus is, it should also act just like tinted glass does, so block code WIP
+// Also because of what the gravity focus is, it should also act just like tinted glass does, so block code WIP,
+// It can only be completely completed in 1.17 anyways so I can wait until I move to that version

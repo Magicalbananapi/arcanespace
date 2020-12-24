@@ -47,37 +47,33 @@ public abstract class GameRendererMixin {
             double interpolatedYaw = (camera.getYaw() + 180.0f) % 360;
 
             double[] relativePitchYaw = Vec3dHelper.getPrecisePitchAndYawFromVector(
-                    gravity.getGravityDirection().getInverseAdjustmentFromDOWNDirection().adjustLookVec(
+                    gravity.getGravityDirection().getOpposite().adjustLookVec(
                             Vec3dHelper.getPreciseVectorForRotation(interpolatedPitch, interpolatedYaw)));
 
             double relativeInterpolatedPitch = relativePitchYaw[PITCH] % 360;
             double relativeInterpolatedYaw = relativePitchYaw[YAW] % 360;
 
-            if (client.isInSingleplayer() && !client.isPaused()) {
-                ArcaneSpace.log("interpolatedPitch: " + interpolatedPitch + ", interpolatedYaw: " + interpolatedYaw);
-                ArcaneSpace.log("relativeInterpolatedPitch: " + relativeInterpolatedPitch + ", relativeInterpolatedYaw: " + relativeInterpolatedYaw);
-            }
-
-            /*/NOTICE: This is ALL math for transitions until the actual rotations begin
+            //NOTICE: This is ALL math for transitions until the actual rotations begin
             double xTranslation = 0;
             double yTranslation = 0;
             double zTranslation = 0;
             float transitionRollAmount = 0;
             if(config.transitionEnabled) {
                 int remainingTicks = gravity.getLength();
-                float effectiveTimeoutTicks = remainingTicks - client.getTickDelta();
+                float effectiveTimeoutTicks = remainingTicks - (1 * client.getTickDelta());
+                //ArcaneSpace.log("remainingTicks: "+remainingTicks+", effectiveTimeoutTicks: "+effectiveTimeoutTicks+", config.rotationAnimationEnd: "+config.rotationAnimationEnd);
 
                 if (remainingTicks != 0 && effectiveTimeoutTicks > config.rotationAnimationEnd) {
                     double rotationAngle;
 
                     // We don't want to run all this code every render tick, so we store the angle to rotate by over the transition
-                    if (gravity.getTransitionAngle() != 0) {
+                    if (!gravity.hasTransitionAngle()) {
 
                         // Get the absolute look vector
                         Vec3d absoluteLookVec = Vec3dHelper.getPreciseVectorForRotation(player.pitch, player.yaw);
 
                         // Get the relative look vector for the current gravity direction
-                        Vec3d relativeCurrentLookVector = gravity.getGravityDirection().getInverseAdjustmentFromDOWNDirection().adjustLookVec(absoluteLookVec);
+                        Vec3d relativeCurrentLookVector = gravity.getGravityDirection().getOpposite().adjustLookVec(absoluteLookVec);
                         // Get the pitch and yaw from the relative look vector
                         double[] pitchAndYawRelativeCurrentLook = Vec3dHelper.getPrecisePitchAndYawFromVector(relativeCurrentLookVector);
                         // Pitch - 90, -90 changes it from the forwards direction to the upwards direction
@@ -91,7 +87,7 @@ public abstract class GameRendererMixin {
                         Vec3d absoluteCurrentUpVector = gravity.getGravityDirection().adjustLookVec(relativeCurrentUpVector);
 
                         // Get the relative look vector for the previous gravity direction
-                        Vec3d relativePrevLookVector = gravity.getDefaultDirection().getInverseAdjustmentFromDOWNDirection().adjustLookVec(absoluteLookVec);
+                        Vec3d relativePrevLookVector = gravity.getDefaultDirection().getOpposite().adjustLookVec(absoluteLookVec);
                         // Get the pitch and yaw from the relative look vector
                         double[] pitchAndYawRelativePrevLook = Vec3dHelper.getPrecisePitchAndYawFromVector(relativePrevLookVector);
                         // Pitch - 90, -90 changes it from the forwards direction to the upwards direction
@@ -120,13 +116,8 @@ public abstract class GameRendererMixin {
                     yTranslation = eyePosChangeVector.y * multiplier;
                     zTranslation = eyePosChangeVector.z * multiplier;
                     client.worldRenderer.scheduleTerrainUpdate();
-                    if (client.isInSingleplayer() && !client.isPaused()) {
-                        ArcaneSpace.log("relativeInterpolatedPitch: " + relativeInterpolatedPitch + ", relativeInterpolatedYaw: " + relativeInterpolatedYaw);
-                        ArcaneSpace.log("interpolatedPitch: " + interpolatedPitch + ", interpolatedYaw: " + interpolatedYaw);
-                        ArcaneSpace.log("rotationAngle: " + rotationAngle + ", transitionAngle: " + gravity.getTransitionAngle() + ", transitionRollAmount: " + transitionRollAmount);
-                    }
                 }
-            }/*/
+            }//
 
             // 1: Undo the absolute pitch and yaw rotation of the player (in that order);
             // THIS IS VERY IMPORTANT AND EXACTLY WHAT IT SAYS IT IS, this is just inverting
@@ -156,7 +147,6 @@ public abstract class GameRendererMixin {
             // I SUSPECT that there will be no issues undoing these changes once the hitbox is rotated (especially the eyes).
             //NOTICE: AKA: The above is likely unnecessary and is likely to be actually fixed by including rotated player hitboxes
 
-            /*/NOTICE: EVERYTHING ELSE is for transitions!
             //FIXME: transitionRollAmount, alongside rotationAngle and transitionAngle,
             // are 0 at all times, figure out why and fix it as this should NOT happen.
             // However it seems as if these are only used for transitions, so for now: [Low Priority]
@@ -169,7 +159,7 @@ public abstract class GameRendererMixin {
                 matrix.translate(xTranslation, yTranslation, zTranslation);
                 matrix.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(camera.getYaw()));
                 matrix.multiply(Vector3f.NEGATIVE_X.getDegreesQuaternion(camera.getPitch()));
-            }*/
+            }//
         }
     }
 }

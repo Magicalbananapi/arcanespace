@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WSW",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "arcanespace:gravity_panel"
+    },
+    "S": {
+      "item": "arcanespace:singularity"
+    }
+  },
+  "result": {
+    "item": "arcanespace:gravity_focus",
+    "count": 1
+  }
+}

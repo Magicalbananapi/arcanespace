@@ -7,11 +7,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ArcaneItems {
-    public static final Item ARCANE_TOKEN = new ArcaneToken();
+    public static final Item SINGULARITY = new SingularityItem();
     public static final Item GRAVITY_PANEL = new ItemGravityPanel(ArcaneBlocks.GRAVITY_PANEL);
 
     public static void registerItems() {
-        register("gravity_token", ARCANE_TOKEN);
+        register("singularity", SINGULARITY);
         register("gravity_panel", GRAVITY_PANEL);
     }
     //Return value kept just in case
@@ -25,6 +25,6 @@ public class ArcaneItems {
     }
 
     public static Item.Settings defaults() {
-        return new Item.Settings().group(ArcaneSpace.TOKEN_GROUP);
+        return new Item.Settings().group(ArcaneSpace.GRAVITY_GROUP);
     }
 }

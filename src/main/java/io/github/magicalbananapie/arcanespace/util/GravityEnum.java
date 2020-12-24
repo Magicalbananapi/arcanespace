@@ -8,44 +8,32 @@ import net.minecraft.util.math.Vec3i;
 public enum GravityEnum {
     //Mirrors game mode Enum and name used for commands
     DOWN (0, "down", new Vec3i(0, 0, 0), 1.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F){
-        @Override
-        public double[] adjustXYZValues(double x, double y, double z) {
+        @Override public double[] adjustXYZValues(double x, double y, double z) {
             return new double[]{x, y, z};
         }
-        @Override
-        public GravityEnum getInverseAdjustmentFromDOWNDirection() {
+        @Override public GravityEnum getOpposite() {
             return this;
-        }
+        } //Up and Down shouldn't be changed
     },
     UP   (1, "up", new Vec3i(0, 0, 180), 1.0F, 0.0F, 0.0F, -1.0F, 0.0F, -1.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, -1.0F, 0.0F){
-        @Override
-        public double[] adjustXYZValues(double x, double y, double z) { return new double[]{-x, -y, z}; }
-        @Override
-        public GravityEnum getInverseAdjustmentFromDOWNDirection() { return this; }
+        @Override public double[] adjustXYZValues(double x, double y, double z) { return new double[]{-x, -y, z}; }
+        @Override public GravityEnum getOpposite() { return this; } //Up and Down shouldn't be changed
     },
     NORTH(2, "north", new Vec3i(90, 0, 0),1.0F, 0.0F, 0.0F, 0.0F, 1.0F, -0.5F, 0.0F, 0.0F, 1.0F, -1.0F, 0.0F, 0.0F, 1.0F){
-        @Override
-        public double[] adjustXYZValues(double x, double y, double z) { return new double[]{x, -z, y}; }
-        @Override
-        public GravityEnum getInverseAdjustmentFromDOWNDirection() { return SOUTH; }
+        @Override public double[] adjustXYZValues(double x, double y, double z) { return new double[]{x, -z, y}; }
+        @Override public GravityEnum getOpposite() { return SOUTH; }
     },
     SOUTH(3, "south", new Vec3i(-90, 0, 0),1.0F, 0.0F, 0.0F, 0.0F, -1.0F, 0.5F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, -1.0F){
-        @Override
-        public double[] adjustXYZValues(double x, double y, double z) { return new double[]{x, z, -y}; }
-        @Override
-        public GravityEnum getInverseAdjustmentFromDOWNDirection() { return NORTH; }
+        @Override public double[] adjustXYZValues(double x, double y, double z) { return new double[]{x, z, -y}; }
+        @Override public GravityEnum getOpposite() { return NORTH; }
     },
     EAST (4, "east",  new Vec3i(0, 0, 90),0.0F, 1.0F, -1.0F, 0.0F, 0.0F, 0.0F, -0.5F, 1.0F, 1.0F, 0.0F, -1.0F, 0.0F, 0.0F){
-        @Override
-        public double[] adjustXYZValues(double x, double y, double z) { return new double[]{-y, x, z}; }
-        @Override
-        public GravityEnum getInverseAdjustmentFromDOWNDirection() { return WEST; }
+        @Override public double[] adjustXYZValues(double x, double y, double z) { return new double[]{-y, x, z}; }
+        @Override public GravityEnum getOpposite() { return WEST; }
     },
     WEST (5, "west",  new Vec3i(0, 0, -90),0.0F, -1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.5F, -1.0F, 1.0F, 0.0F, 1.0F, 0.0F, 0.0F){
-        @Override
-        public double[] adjustXYZValues(double x, double y, double z) { return new double[]{y, -x, z}; }
-        @Override
-        public GravityEnum getInverseAdjustmentFromDOWNDirection() { return EAST; }
+        @Override public double[] adjustXYZValues(double x, double y, double z) { return new double[]{y, -x, z}; }
+        @Override public GravityEnum getOpposite() { return EAST; }
     };
 
     private final int id;
@@ -94,7 +82,7 @@ public enum GravityEnum {
 
     public Vec3i getCameraTransformVars() { return cameraTransformVars; }
 
-    public abstract GravityEnum getInverseAdjustmentFromDOWNDirection();
+    public abstract GravityEnum getOpposite();
 
     public Vec3d adjustLookVec(Vec3d input) {
         double[] d = this.adjustXYZValues(input.x, input.y, input.z);
