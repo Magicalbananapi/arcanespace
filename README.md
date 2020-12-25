@@ -16,6 +16,7 @@ Currently Implemented:
 - Camera rotates based on gravity
 - Gravity Panels (Ported a similar item From Starminer and U&D&AA)
 - Gravity Focus
+- Items have background blur effect (Like from Avaritia) [Extra Visual Effects]
 
 Currently Working On:
 - Make entites actually effected by different gravity directions (AKA falling up or sideways)
@@ -27,6 +28,7 @@ Currently Working On:
 - Implementing Gravity Strength
 - Implement G-Fields (A region that changes an entity's Gravity when entered and based on relative location to a focal point)
 - Implement Gravity Focus Functionality (Acts like a beacon or conduit to emit a g-field)
+- Colored background blurs (Possibly to represent rarities?) [Extra Visual Effects]
 
 Future Plans(Once the previously mentioned steps are completed):
 - Remove redundancies in code and rewrite some of it
