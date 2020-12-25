@@ -88,9 +88,14 @@
   "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[3]": "Lower numbers are faster, Higher are slower; 6 is the default.",
 
   "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled": "Shadow Effect",
-  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled.@Tooltip": "Determines if the shadow effect displays.",
+  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled.@Tooltip[0]": "Determines if the shadow effect displays.",
+  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled.@Tooltip[1]": "A shadow is a black glow in item backgrounds.",
 
-  "text.autoconfig.arcanespace.option.visualConfig.pixelatedShadow": "Pixelated Shadow",
+  "text.autoconfig.arcanespace.option.visualConfig.glowEnabled": "Glow Effect",
+  "text.autoconfig.arcanespace.option.visualConfig.glowEnabled.@Tooltip[0]": "Determines if the glow effect displays.",
+  "text.autoconfig.arcanespace.option.visualConfig.glowEnabled.@Tooltip[1]": "A glow is a colored glow in item backgrounds.",
+
+  "text.autoconfig.arcanespace.option.visualConfig.pixelatedBlur": "Pixelated Blur",
   "text.autoconfig.arcanespace.option.visualConfig.pixelatedShadow.@Tooltip": "Determines if the shadow effect is pixelated.",
 
 
