@@ -87,17 +87,16 @@
   "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[2]": "to either a negative value or 0, the singularity is disabled.",
   "text.autoconfig.arcanespace.option.visualConfig.sphereComplexity.@Tooltip[3]": "Lower numbers are faster, Higher are slower; 6 is the default.",
 
-  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled": "Shadow Effect",
-  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled.@Tooltip[0]": "Determines if the shadow effect displays.",
-  "text.autoconfig.arcanespace.option.visualConfig.shadowEnabled.@Tooltip[1]": "A shadow is a black glow in item backgrounds.",
-
   "text.autoconfig.arcanespace.option.visualConfig.glowEnabled": "Glow Effect",
   "text.autoconfig.arcanespace.option.visualConfig.glowEnabled.@Tooltip[0]": "Determines if the glow effect displays.",
   "text.autoconfig.arcanespace.option.visualConfig.glowEnabled.@Tooltip[1]": "A glow is a colored glow in item backgrounds.",
 
-  "text.autoconfig.arcanespace.option.visualConfig.pixelatedBlur": "Pixelated Blur",
-  "text.autoconfig.arcanespace.option.visualConfig.pixelatedShadow.@Tooltip": "Determines if the shadow effect is pixelated.",
+  "text.autoconfig.arcanespace.option.visualConfig.rarityGlow": "Glow Enabled for Rarity",
+  "text.autoconfig.arcanespace.option.visualConfig.rarityGlow.@Tooltip[0]": "Makes items glow depending on their rarity.",
+  "text.autoconfig.arcanespace.option.visualConfig.rarityGlow.@Tooltip[1]": "Currently WIP, Creative Inv. has examples.",
 
+  "text.autoconfig.arcanespace.option.visualConfig.pixelatedGlow": "Pixelated Glow",
+  "text.autoconfig.arcanespace.option.visualConfig.pixelatedGlow.@Tooltip": "Determines if the glow effect is pixelated.",
 
   "text.autoconfig.arcanespace.option.debugMode": "Debug Mode",
   "text.autoconfig.arcanespace.option.debugMode.@Tooltip": "Enables debug mode, you don't need this.",

@@ -43,7 +43,11 @@ public abstract class EntityMixin implements EntityAccessor {
     public void setGravity(Entity entity, Gravity gravity) { this.gravity = gravity; }
 
     @Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;tickNetherPortal()V"))
-    private void baseTick(CallbackInfo ci) { if (this.gravity.getLength() > 0) this.gravity.tick(); }
+    private void baseTick(CallbackInfo ci) {
+        if(this.gravity.getTimeout() > 0) this.gravity.tickTimeout();
+        if(this.gravity.getLength() > 0) this.gravity.tickLength();
+        else this.gravity.revertGravityDirection((Entity)(Object)this);
+    }
 
     //@Shadow public void method_30634(double x, double y, double z) {}
 

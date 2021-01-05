@@ -10,15 +10,17 @@ import org.spongepowered.asm.mixin.Unique;
 
 public class Gravity {
     private static final ArcaneConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig();
-    public static final int DEFAULT_LENGTH= 15; //Ticks before rotation can happen again
+    public static final int DEFAULT_LENGTH = 20;
+    public static final int DEFAULT_TIMEOUT = 15; //Ticks before rotation can happen again
 
     //FIXME: I made a LOT of mistakes setting up gravityDirection, this is going to take some time to fix
     private final GravityEnum defaultDirection; //TODO: Make this dimension specific, AKA make dimensions store this
     private GravityEnum previousDirection, currentDirection;
     private float gravityStrength;
-    private int length; //Decrement each tick if greater than 0
+    private int timeout; //Decrement each tick if greater than 0
+    private int length; //Can be combined with timeout if made to be timeout*4/3
     private float transitionAngle;
-    private boolean hasTransitionAngle = false;
+    private boolean hasTransitionAngle = false; //Can be removed by checking if transitionAngle is null
     private Vec3d oldEyePos;
     private Vec3d eyePosChangeVec = Vec3d.ZERO;
 
@@ -35,18 +37,18 @@ public class Gravity {
         this.gravityStrength = config.gravityStrength; //1F represents 100% default minecraft gravity
     }
 
-    public void setGravityDirection(Entity entity, int id, int length, boolean override) {
-        setGravityDirection(entity, GravityEnum.get(id), length,  override);
+    public void setGravityDirection(Entity entity, int id, boolean override) {
+        setGravityDirection(entity, GravityEnum.get(id),  override);
     }
-    public void setGravityDirection(Entity entity, GravityEnum newDirection, int length, boolean override) {
-        if(override||!newDirection.equals(this.currentDirection)&&this.length<=0) {
+    public void setGravityDirection(Entity entity, GravityEnum newDirection, boolean override) {
+        if(override||!newDirection.equals(this.currentDirection)&&this.timeout<=0&&this.length<=0) {
             this.oldEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
             this.previousDirection = this.currentDirection;
             this.currentDirection = newDirection;
-            this.length = length;
+            this.timeout = DEFAULT_TIMEOUT;
+            this.length = DEFAULT_LENGTH;
             gravityChangeEffects(entity, newDirection);
-        } else if(newDirection.equals(this.currentDirection)) this.length = length;
-        //else alone was (!override && newDirection.equals(temporaryDirection) || this.length>0)
+        } else if(newDirection.equals(this.currentDirection)) this.length = DEFAULT_LENGTH;
     }
 
     public boolean hasTransitionAngle() { return this.hasTransitionAngle; }
@@ -74,8 +76,11 @@ public class Gravity {
     @NotNull public Vec3d getEyePosChangeVector() { return this.eyePosChangeVec; }
     public void setEyePosChangeVector(@NotNull Vec3d vec3d) { this.eyePosChangeVec = vec3d; }
 
+    public int getTimeout() { return this.timeout; }
+    public void tickTimeout() { --this.timeout; }
+
     public int getLength() { return this.length; }
-    public void tick() { --this.length; }
+    public void tickLength() { --this.length; }
 
     public float getTransitionAngle() { return this.transitionAngle; }
     public void setTransitionAngle(float transitionAngle) {

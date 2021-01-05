@@ -11,6 +11,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
@@ -31,12 +32,16 @@ public abstract class InGameHudMixin {
     //We want to do some sort of inject or the like into the render method
     //Minecraft's effect can be freezing, this will be frozen
     //TODO: Either that, or make this freeze effect actually freeze the player's camera and pose and give a third person visual effect
+    //Notice: This could crash with mods that change the player type, and also in spectator mode, and therefore should be replaced
+    // Also, after testing a bit, this doesn't seem to work
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"))
     private void render(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        int freezeTime = ((LivingEntityAccessor)getCameraPlayer()).getFreezeTime();
-        if (client.options.getPerspective().isFirstPerson() && (freezeTime != 0||
-                Objects.requireNonNull(client.player).inventory.getArmorStack(3).getItem() == Blocks.ICE.asItem())) {
-            renderIceOverlay(MinecraftClient.getInstance(), freezeTime);
+        if(this.client.getCameraEntity() instanceof LivingEntity) { //Because freezeTime is in livingEntity
+            int freezeTime = ((LivingEntityAccessor) this.client.getCameraEntity()).getFreezeTime();
+            if (client.options.getPerspective().isFirstPerson() && (freezeTime != 0 ||
+                    Objects.requireNonNull(client.player).inventory.getArmorStack(3).getItem() == Blocks.ICE.asItem())) {
+                renderIceOverlay(MinecraftClient.getInstance(), freezeTime);
+            }
         }
     }
 

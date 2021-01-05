@@ -69,4 +69,18 @@ public class ArcaneSpace implements ModInitializer {
     // was a disaster in more ways than one, I'd have to make a renderer that just happens to look like the sky again.
 
     //NOTICE: In the (extremely unlikely) event that I can figure out how to do it, free angular gravity might be implemented.
+
+    //NOTICE: Ideas for *relatively* unrelated features:
+    // - Add new gasses to the game, they would be intangible like air and water, but could be picked up with something
+    // like a bucket, but for gasses only, they would also have a source block and 'spread' blocks(instead of flowing),
+    // which have concentrations and all in all this creates a kind of sphere effect. This however, is different from water
+    // in that the source block has a concentration as well, (And if I can figure out a way, I might even remove it entirely),
+    // and each gas block spreads if the surrounding block is air and gives 2 of its own concentration to surrounding blocks,
+    // maybe changing how much it gives based on how much concentration it has.
+    // Still a VERY WIP idea.
+    // - Asphyxiation would stop you from breathing in harmful gasses (Some gasses would still effect you however)
+
+    //NOTICE: Add to the glow by looking at how the glowing potion effect is coded and seperating the white, inner section,
+    // and after that recreate it in renderers with a colored glow
+    // IF POSSIBLE: Try to make glowing render effect apply to items in the inventory :)
 }

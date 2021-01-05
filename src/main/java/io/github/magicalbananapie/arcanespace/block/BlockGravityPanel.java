@@ -111,12 +111,12 @@ public class BlockGravityPanel extends FacingBlock implements Waterloggable {
         switch (state.get(Properties.FACING)) {
             //Here Directions are inverted because the block is FACING the said direction, not actually going that way,
             // AKA the direction of the top of the block to the bottom is the direction of gravity :)
-            case UP: { gravity.setGravityDirection(entity, 0, Gravity.DEFAULT_LENGTH, false); break; }
-            case DOWN: { gravity.setGravityDirection(entity, 1, Gravity.DEFAULT_LENGTH, false); break; }
-            case SOUTH: { gravity.setGravityDirection(entity, 2, Gravity.DEFAULT_LENGTH, false); break; }
-            case NORTH: { gravity.setGravityDirection(entity, 3, Gravity.DEFAULT_LENGTH, false); break; }
-            case WEST: { gravity.setGravityDirection(entity, 4, Gravity.DEFAULT_LENGTH, false); break; }
-            case EAST: { gravity.setGravityDirection(entity, 5, Gravity.DEFAULT_LENGTH, false); break; }
+            case UP:   { gravity.setGravityDirection(entity, 0, false); break; }
+            case DOWN: { gravity.setGravityDirection(entity, 1, false); break; }
+            case SOUTH:{ gravity.setGravityDirection(entity, 2, false); break; }
+            case NORTH:{ gravity.setGravityDirection(entity, 3, false); break; }
+            case WEST: { gravity.setGravityDirection(entity, 4, false); break; }
+            case EAST: { gravity.setGravityDirection(entity, 5, false); break; }
         }
     }
 }

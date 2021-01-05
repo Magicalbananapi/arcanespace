@@ -5,12 +5,13 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EntityMixin",
+    "FallingBlockEntityMixin",
     "LivingEntityMixin"
   ],
   "client": [
     "GameRendererMixin",
-    "ItemRendererMixin",
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,7 +1,6 @@
 package io.github.magicalbananapie.arcanespace.mixin;
 
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
-import io.github.magicalbananapie.arcanespace.ArcaneSpace;
 import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
 import io.github.magicalbananapie.arcanespace.util.Gravity;
 import io.github.magicalbananapie.arcanespace.util.Vec3dHelper;
@@ -12,7 +11,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.spongepowered.asm.mixin.Final;
@@ -26,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.PITCH;
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.YAW;
 
+//FIXME: Camera rotations are both broken, and don't work with the down direction
+
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
     @Shadow @Final private Camera camera;
@@ -37,11 +38,11 @@ public abstract class GameRendererMixin {
     private void PostCameraUpdate(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
         Entity cameraEntity = client.getCameraEntity();
-        //NOTICE: Seems like it's purposefully disabled for spectator mode,
-        // I'll have to enable this again later by removing this check
-        if (cameraEntity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity)cameraEntity;
-            Gravity gravity = ((EntityAccessor)player).getGravity();
+        //Works in spectator mode and with custom entity types now as long as they extend livingEntity,
+        // however there are likely crashes in odd cases, and TODO: THE ACTUAL CAMERA ROTATIONS DON'T WORK IN SPECTATOR
+        if (cameraEntity instanceof LivingEntity) {
+            LivingEntity entity = (LivingEntity)cameraEntity;
+            Gravity gravity = ((EntityAccessor)entity).getGravity();
 
             double interpolatedPitch = camera.getPitch() % 360;
             double interpolatedYaw = (camera.getYaw() + 180.0f) % 360;
@@ -59,18 +60,17 @@ public abstract class GameRendererMixin {
             double zTranslation = 0;
             float transitionRollAmount = 0;
             if(config.transitionEnabled) {
-                int remainingTicks = gravity.getLength();
-                float effectiveTimeoutTicks = remainingTicks - (1 * client.getTickDelta());
+                float effectiveTimeoutTicks = gravity.getTimeout() - (1 * client.getTickDelta());
                 //ArcaneSpace.log("remainingTicks: "+remainingTicks+", effectiveTimeoutTicks: "+effectiveTimeoutTicks+", config.rotationAnimationEnd: "+config.rotationAnimationEnd);
 
-                if (remainingTicks != 0 && effectiveTimeoutTicks > config.rotationAnimationEnd) {
+                if (gravity.getTimeout() > 0 && effectiveTimeoutTicks > config.rotationAnimationEnd) {
                     double rotationAngle;
 
                     // We don't want to run all this code every render tick, so we store the angle to rotate by over the transition
                     if (!gravity.hasTransitionAngle()) {
 
                         // Get the absolute look vector
-                        Vec3d absoluteLookVec = Vec3dHelper.getPreciseVectorForRotation(player.pitch, player.yaw);
+                        Vec3d absoluteLookVec = Vec3dHelper.getPreciseVectorForRotation(entity.pitch, entity.yaw);
 
                         // Get the relative look vector for the current gravity direction
                         Vec3d relativeCurrentLookVector = gravity.getGravityDirection().getOpposite().adjustLookVec(absoluteLookVec);
@@ -108,7 +108,7 @@ public abstract class GameRendererMixin {
                         gravity.setTransitionAngle((float) rotationAngle);
                     } else rotationAngle = gravity.getTransitionAngle();
 
-                    double multiplier = 1 - ((Gravity.DEFAULT_LENGTH - effectiveTimeoutTicks) / config.rotationAnimationLength); // multiplierOneToZero = 1 - multiplierZeroToOne // and multiplierZeroToOne = numerator / denominator
+                    double multiplier = 1 - ((Gravity.DEFAULT_TIMEOUT - effectiveTimeoutTicks) / config.rotationAnimationLength); // multiplierOneToZero = 1 - multiplierZeroToOne // and multiplierZeroToOne = numerator / denominator
 
                     transitionRollAmount = (float) (rotationAngle * multiplier);
                     Vec3d eyePosChangeVector = gravity.getEyePosChangeVector();

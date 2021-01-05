@@ -5,6 +5,8 @@ import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 
+//VERY WIP, need to add categories and collapsable rotation config, and in general redo the entire thing
+
 @Config(name = ArcaneSpace.MOD_ID)
 public class ArcaneConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
@@ -23,10 +25,10 @@ public class ArcaneConfig implements ConfigData {
     public double rotationAnimationSpeed = 1.5; //transition speed, 30 ticks
 
     @ConfigEntry.Gui.Tooltip
-    public double rotationAnimationLength = Gravity.DEFAULT_LENGTH / rotationAnimationSpeed;
+    public double rotationAnimationLength = Gravity.DEFAULT_TIMEOUT / rotationAnimationSpeed;
 
     @ConfigEntry.Gui.Tooltip
-    public double rotationAnimationEnd = Gravity.DEFAULT_LENGTH - rotationAnimationLength;
+    public double rotationAnimationEnd = Gravity.DEFAULT_TIMEOUT - rotationAnimationLength;
 
     @ConfigEntry.Gui.Tooltip
     public int gFieldSize = 8;
@@ -85,16 +87,14 @@ public class ArcaneConfig implements ConfigData {
         public int sphereComplexity = 6;
 
         @ConfigEntry.Gui.Tooltip(count = 2)
-        public boolean shadowEnabled = true;
+        public boolean glowEnabled = true;
+        //This should be changed to be a button like difficulty or graphics later on to include rarity glow
 
         @ConfigEntry.Gui.Tooltip(count = 2)
-        public boolean glowEnabled = true;
+        public boolean rarityGlow = true;
 
-        @ConfigEntry.Gui.Tooltip()
-        public boolean pixelatedShadow = false;
-
-        @ConfigEntry.Gui.Tooltip()
-        public boolean pixelatedBlur = false;
+        @ConfigEntry.Gui.Tooltip
+        public boolean pixelatedGlow = false;
     }
 
     @ConfigEntry.Gui.Tooltip

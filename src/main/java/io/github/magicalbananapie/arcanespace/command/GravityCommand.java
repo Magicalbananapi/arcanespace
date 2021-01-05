@@ -29,13 +29,10 @@ public class GravityCommand {
         LiteralArgumentBuilder<ServerCommandSource> literal = CommandManager.literal("gravity")
                 .requires((serverCommandSource) -> serverCommandSource.hasPermissionLevel(2));
 
-        //NOTICE: This command will be redundant whenever I get gravity stored in entity nbt data correctly
-        if(ArcaneSpace.DEBUG_MODE) { //Adds a [/gravity debug <Entity>] command if Debug Mode is turned on :)
-            literal.then(CommandManager.literal("debug")
-                            .executes((ctx) -> execute(ctx, Collections.singleton(ctx.getSource().getPlayer())))
-                    .then(CommandManager.argument("target", EntityArgumentType.entities())
-                            .executes((ctx) -> execute(ctx, EntityArgumentType.getEntities(ctx, "target")))));
-        }
+        literal.then(CommandManager.literal("get")
+                        .executes((ctx) -> execute(ctx, Collections.singleton(ctx.getSource().getPlayer())))
+                .then(CommandManager.argument("target", EntityArgumentType.entities())
+                        .executes((ctx) -> execute(ctx, EntityArgumentType.getEntities(ctx, "target")))));
 
         literal.then(CommandManager.literal("strength")
                 .then(CommandManager.argument("magnitude", FloatArgumentType.floatArg())
@@ -47,9 +44,9 @@ public class GravityCommand {
         for (GravityEnum gravityDirection : GravityEnum.values()) {
             literal.then(CommandManager.literal("direction")
                     .then(CommandManager.literal(gravityDirection.getName())
-                            .executes((ctx) -> execute(ctx, Collections.singleton(ctx.getSource().getEntity()), gravityDirection, Gravity.DEFAULT_LENGTH))
+                            .executes((ctx) -> execute(ctx, Collections.singleton(ctx.getSource().getEntity()), gravityDirection, Gravity.DEFAULT_TIMEOUT))
                     .then(CommandManager.argument("target", EntityArgumentType.entities())
-                            .executes((ctx) -> execute(ctx, EntityArgumentType.getEntities(ctx, "target"), gravityDirection, Gravity.DEFAULT_LENGTH))
+                            .executes((ctx) -> execute(ctx, EntityArgumentType.getEntities(ctx, "target"), gravityDirection, Gravity.DEFAULT_TIMEOUT))
                     .then(CommandManager.argument("length", IntegerArgumentType.integer(0))
                             .executes((ctx) -> execute(ctx, EntityArgumentType.getEntities(ctx, "target"), gravityDirection, IntegerArgumentType.getInteger(ctx, "length")))))));
         } dispatcher.register(literal);
@@ -62,8 +59,10 @@ public class GravityCommand {
                     "Default Direction: "+((EntityAccessor)entity).getGravity().getDefaultDirection().getName()+
                     "\nCurrent Gravity: "+((EntityAccessor)entity).getGravity().getGravityDirection().getName()+
                     "\nPrevious Gravity: "+((EntityAccessor)entity).getGravity().getPreviousDirection().getName()+
-                    "\nGravity Strength: "+((EntityAccessor)entity).getGravity().getGravityStrength()), true);
-            ++i; //NOTICE: broadcastToOps Might have to be false if it is what I think
+                    "\nGravity Strength: "+((EntityAccessor)entity).getGravity().getGravityStrength()+
+                    "\nTransition Ticks: "+((EntityAccessor)entity).getGravity().getTimeout()/*+
+                    "\nGravity Length: "+((EntityAccessor)entity).getGravity().get()*/), false);
+            ++i;
         } return i;
     }
 
@@ -71,7 +70,7 @@ public class GravityCommand {
         //Set target gravity direction permanently
         int i = 0;
         for (Entity entity : targets) {
-            ((EntityAccessor)entity).getGravity().setGravityDirection(entity, gravityDirection, length, true);
+            ((EntityAccessor)entity).getGravity().setGravityDirection(entity, gravityDirection, true);
             //Below is command 'feedback' in chat
             Text text = gravityDirection.getTranslatableName();
             if(entity instanceof ServerPlayerEntity) {
