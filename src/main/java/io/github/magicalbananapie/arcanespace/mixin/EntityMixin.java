@@ -1,24 +1,34 @@
 package io.github.magicalbananapie.arcanespace.mixin;
 
-import io.github.magicalbananapie.arcanespace.ArcaneSpace;
 import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
 import io.github.magicalbananapie.arcanespace.util.Gravity;
-import io.github.magicalbananapie.arcanespace.util.GravityEnum;
 import io.github.magicalbananapie.arcanespace.util.Vec3dHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.PITCH;
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.YAW;
+
+//NOTICE: Mysteryem's Concerning EntityPlayerWithGravity has all of the motion stuff,
+// IT WILL BE EASIER TO COME UP WITH A UNIQUE APPROACH, DO *NOT* DO THE EXACT SAME THING
+//NOTICE: Mysteryem's PatchEntityPlayerSP and PathEntityPlayerSubClass also has some essential methods I was missing
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements EntityAccessor {
@@ -27,20 +37,99 @@ public abstract class EntityMixin implements EntityAccessor {
     @Shadow public float prevYaw;
     @Shadow public float prevPitch;
     @Shadow private Entity vehicle;
-    @Shadow public abstract void setNoGravity(boolean noGravity);
+    @Shadow private EntityDimensions dimensions;
+    @Shadow public abstract void setBoundingBox(Box boundingBox);
+    @Shadow public abstract void setPos(double x, double y, double z);
+    @Shadow protected abstract Box getBoundingBox();
+    @Shadow @Final private EntityType<?> type;
+
     //TODO: FromTag, ToTag,
 
+    @Shadow private Vec3d pos;
     //Direction defaults to DOWN if not set correctly, should help compatibility and reduce bugs the tiniest bit.
     // Also, Gravity Strength 0 is Zero-G: can't fall, jump, or move by walking and must use items to move.
     // Negative gravity strength will push away affected entities without changing direction;
     // This is functionally identical as far as physics go, but entity and model rotation is opposite.
     private Gravity gravity = new Gravity();
 
+
+
     @Override
     public Gravity getGravity() { return gravity; }
 
     @Override
     public void setGravity(Entity entity, Gravity gravity) { this.gravity = gravity; }
+
+    //Voodoo that probably does nothing ;-;
+    /*@Redirect(method = "updatePosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityDimensions;method_30231(DDD)Lnet/minecraft/util/math/Box;"))
+    public Box updatePosition(EntityDimensions entityDimensions, double x, double y, double z) {
+        return this.getGravity().getGravityDirection().getGravityAdjustedAABB((Entity)(Object)this);
+    }*/
+
+    /**
+     * @author Magicalbananapie
+     * Why am I doing this, you ask? Well, the Up&Down&AllAround Mod Author, Mysteryem,
+     * created a new type of playerEntity to overwrite this same method, and as of now,
+     * changing this method is nessesary to make sure the bounding box is in the correct
+     * place for each gravity direction, I felt like this was a better solution that was unlikely to
+     * cause many conflicts, but I can
+     */
+    @Redirect(method = "moveToBoundingBoxCenter", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setPos(DDD)V"))
+    public void moveToBoundingBoxCenter(Entity entity, double x, double y, double z) {
+        ((EntityAccessor)this).getGravity().getGravityDirection().resetPositionToBB((Entity)(Object)this);
+    }
+
+    @Inject(method = "updatePosition", at = @At(value = "TAIL"))
+    public void updatePosition(double x, double y, double z, CallbackInfo ci) {
+        setBoundingBox(this.getGravity().getGravityDirection().getOpposite().getGravityAdjustedAABB((Entity)(Object)this));
+    }
+
+    //@Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V", ordinal = 0))
+    //public void setBB(Entity entity, Box boundingBox) {}
+
+    /**
+     * Changes getEyeHeight to account for gravity... theoretically
+     *
+     * @author Magicalbananapie
+     * @param pose EntityPose
+     * @param dimensions EntityDimensions
+     */
+    @Inject(method = "getEyeHeight(Lnet/minecraft/entity/EntityPose;Lnet/minecraft/entity/EntityDimensions;)F", at = @At(value = "HEAD"), cancellable = true)
+    public void getEyeHeight(EntityPose pose, EntityDimensions dimensions, CallbackInfoReturnable<Float> cir) {
+        switch(gravity.getGravityDirection()) {
+            default: cir.setReturnValue(0F);
+            case UP: cir.setReturnValue(-dimensions.height * 0.85F);
+            case DOWN: cir.setReturnValue(dimensions.height * 0.85F);
+        }
+    }
+
+    /**
+     * Changes Dimensions to account for gravity... theoretically
+     *
+     * @author Magicalbananapie
+     * @param pose EntityPose
+     */
+    @Inject(method = "getDimensions", at = @At(value = "HEAD"), cancellable = true)
+    public void getDimensions(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        switch(gravity.getGravityDirection()) {
+            case UP: cir.setReturnValue(this.type.getDimensions().scaled(0.5F));
+            case DOWN: cir.setReturnValue(this.type.getDimensions().scaled(0.5F));
+            default: cir.setReturnValue(this.type.getDimensions().scaled(0.5F));
+        }
+    }
+
+    @Inject(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    public void setBB(CallbackInfo ci, EntityDimensions entityDimensions, EntityPose entityPose, EntityDimensions entityDimensions2, Box box) {
+        double heightExpansion = (this.dimensions.height - entityDimensions.height) / 2d;
+        double widthExpansion = (this.dimensions.width - entityDimensions.width) / 2d;
+        double[] d = this.gravity.getGravityDirection().adjustXYZValuesMaintainSigns(widthExpansion, heightExpansion, widthExpansion);
+        double[] d2 = this.gravity.getGravityDirection().adjustXYZValues(0, heightExpansion, 0);
+        this.setBoundingBox(box.expand(d[0], d[1], d[2]).offset(d2[0], d2[1], d2[2]));
+    }
+
+    //IDK WHAT TO DO HERE AAAHHHHHHHHHH, THIS IS DEFINITELY GOING TO BREAK SOMETHING
+    @Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V"/*, ordinal = 1*/))
+    public void setBB(Entity entity, Box boundingBox) {/*DO NOTHING*/}
 
     @Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;tickNetherPortal()V"))
     private void baseTick(CallbackInfo ci) {

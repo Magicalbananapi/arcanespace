@@ -1,9 +1,18 @@
 package io.github.magicalbananapie.arcanespace.blockentity;
 
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
+import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
+import io.github.magicalbananapie.arcanespace.util.Gravity;
+import io.github.magicalbananapie.arcanespace.util.GravityEnum;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Tickable;
+
+import net.minecraft.util.math.Box;
+
+import java.util.List;
 
 public class BlockEntityGravityFocus extends BlockEntity implements Tickable { //NOTICE: Tickable due to G-Field checks
     private int gFieldSize;
@@ -40,6 +49,155 @@ public class BlockEntityGravityFocus extends BlockEntity implements Tickable { /
     //NOTICE: Functionality for blockEntity each tick, Conduit Block Entity provides the perfect example for this :)
     @Override
     public void tick() {
+        /*if (this.world != null && this.pos != null) {
+            Box gravityBox = (new Box(this.pos)).expand(20);
+            Box gravityBox2 = (new Box(this.pos)).expand(20+5);
+            List<Entity> list = this.world.getEntitiesByClass(Entity.class, gravityBox, e -> !(e instanceof PlayerEntity && ((PlayerEntity) e).abilities.flying));
+            List<Entity> listb = this.world.getEntitiesByClass(Entity.class, gravityBox2, null);
 
+            for (Entity entity : list) {
+                Gravity gravity = ((EntityAccessor)entity).getGravity();
+
+                listb.remove(entity);
+                entity.setNoGravity(true);
+
+                double testy = this.pos.getY() - entity.getPos().getY();
+
+                if (testy < 0) {
+                    testy = testy * -1;
+                }
+
+                double testx = this.pos.getX() - entity.getPos().getX();
+
+                if (testx < 0) {
+                    testx = testx * -1;
+                }
+
+                double testz = this.pos.getZ() - entity.getPos().getZ();
+
+                if (testz < 0) {
+                    testz = testz * -1;
+                }
+
+                if (testy >= testx && testy >= testz) {
+                    double decresey = testy;
+
+                    if (decresey < 0) {
+                        decresey = 1;
+                    }
+
+                    if (this.pos.getY() < entity.getPos().getY()) {
+                        if(decresey>(20*.6666)) {
+                            decresey=decresey-((20*.6666)-1);
+                            entity.setVelocity(entity.getVelocity().add(0, -.07 / decresey, 0));
+                        }else{
+                            entity.setVelocity(entity.getVelocity().add(0, -0.07, 0));
+                        }
+
+                        { gravity.setGravityDirection(entity, 0, false); }
+                    }
+
+                    if (this.pos.getY() > entity.getPos().getY()) {
+                        if(decresey>(20*.6666)) {
+                            decresey=decresey-((20*.6666)-1);
+                            entity.setVelocity(entity.getVelocity().add(0, 0.07 / decresey, 0));
+                        }else{
+                            entity.setVelocity(entity.getVelocity().add(0, 0.07, 0));
+                        }
+                        if(entity.verticalCollision)
+                        {
+                            entity.setOnGround(true);
+                        }
+
+                        { gravity.setGravityDirection(entity, 1, false); }
+
+                    }
+                }
+
+                if (testz >= testx && testz >= testy) {
+                    double decresez = testz;
+
+                    if (decresez < 0) {
+                        decresez = 1;
+                    }
+
+                    if (this.pos.getZ() < entity.getPos().getZ()) {
+                        if(decresez>(20*.6666)) {
+                            decresez=decresez-((20*.6666)-1);
+                            entity.setVelocity(entity.getVelocity().add(0, 0, -.07 / decresez));
+                        }else{
+                            entity.setVelocity(entity.getVelocity().add(0, 0, -0.07));
+                        }
+                        if(entity.horizontalCollision)
+                        {
+                            entity.setOnGround(true);
+                        }
+
+                        { gravity.setGravityDirection(entity, 2, false); }
+
+                    }
+
+                    if (this.pos.getZ() > entity.getPos().getZ()) {
+                        if(decresez>(20*.6666)) {
+                            decresez=decresez-((20*.6666)-1);
+                            entity.setVelocity(entity.getVelocity().add(0, 0, 0.07 / decresez));
+                        }else{
+                            entity.setVelocity(entity.getVelocity().add(0, 0, 0.07));
+                        }
+                        if(entity.horizontalCollision)
+                        {
+                            entity.setOnGround(true);
+                        }
+
+                        { gravity.setGravityDirection(entity, 3, false); }
+
+                    }
+                }
+
+                if (testx >= testy && testx >= testz) {
+                    double decresex = testx;
+
+                    if (decresex < 0) {
+                        decresex = 1;
+                    }
+
+                    if (this.pos.getX() < entity.getPos().getX()) {
+                        if(decresex>(20*.6666)) {
+                            decresex=decresex-((20*.6666)-1);
+                            entity.setVelocity(entity.getVelocity().add(-0.07 / decresex, 0, 0));
+                        }else{
+                            entity.setVelocity(entity.getVelocity().add(-0.07, 0, 0));
+                        }
+                        if(entity.horizontalCollision)
+                        {
+                            entity.setOnGround(true);
+                        }
+
+                        { gravity.setGravityDirection(entity, 5, false); }
+
+                    }
+
+                    if (this.pos.getX() > entity.getPos().getX()) {
+                        if(decresex>(20*.6666)) {
+                            decresex=decresex-((20*.6666)-1);
+                            entity.setVelocity(entity.getVelocity().add(0.07 / decresex, 0, 0));
+                        }else{
+                            entity.setVelocity(entity.getVelocity().add(0.07, 0, 0));
+                        }
+                        if(entity.horizontalCollision)
+                        {
+                            entity.setOnGround(true);
+                        }
+
+                        { gravity.setGravityDirection(entity, 4, false);}
+                    }
+                }
+            }
+
+            for (Entity entity : listb) {
+                entity.setNoGravity(false);
+
+            }
+        }*/
     }
 }

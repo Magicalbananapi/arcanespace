@@ -14,7 +14,7 @@ public class FallingBlockEntityMixin {
     //Also, vertical and horizontal collisions do not work
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;add(DDD)Lnet/minecraft/util/math/Vec3d;"))
     private Vec3d add(Vec3d vec3d, double x, double y, double z) {
-        ((Entity)(Object)this).velocityDirty=true;
+        //((Entity)(Object)this).velocityDirty=true;
         switch(((EntityAccessor)this).getGravity().getGravityDirection()) {
             case UP:   return vec3d.add( x, -y,  z);
             case NORTH:return vec3d.add( x,  z,  y);

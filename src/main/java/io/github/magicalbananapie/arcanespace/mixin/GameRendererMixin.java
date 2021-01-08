@@ -48,7 +48,7 @@ public abstract class GameRendererMixin {
             double interpolatedYaw = (camera.getYaw() + 180.0f) % 360;
 
             double[] relativePitchYaw = Vec3dHelper.getPrecisePitchAndYawFromVector(
-                    gravity.getGravityDirection().getOpposite().adjustLookVec(
+                    gravity.getGravityDirection().adjustLookVec(
                             Vec3dHelper.getPreciseVectorForRotation(interpolatedPitch, interpolatedYaw)));
 
             double relativeInterpolatedPitch = relativePitchYaw[PITCH] % 360;
@@ -131,7 +131,7 @@ public abstract class GameRendererMixin {
             matrix.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion((float)relativeInterpolatedYaw));
 
             // 3: Now that our look direction is effectively 0 yaw and 0 pitch, perform the rotation specific for this gravity
-            Vec3i vars = gravity.getGravityDirection().getCameraTransformVars();
+            Vec3i vars = gravity.getGravityDirection().getOpposite().getCameraTransformVars();
             int x = vars.getX(); if (x != 0) matrix.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(x));
             int y = vars.getY(); if (y != 0) matrix.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(y));
             int z = vars.getZ(); if (z != 0) matrix.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(z));

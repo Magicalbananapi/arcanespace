@@ -3,6 +3,7 @@ package io.github.magicalbananapie.arcanespace.util;
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -56,6 +57,8 @@ public class Gravity {
     private void gravityChangeEffects(Entity entity, GravityEnum newDirection) {
         this.transitionAngle = 0;
         this.hasTransitionAngle = false;
+        entity.setBoundingBox(newDirection.getOpposite().getGravityAdjustedAABB(entity));
+        entity.moveToBoundingBoxCenter();
         if (this.previousDirection != newDirection) {
             this.prevTurnRate = this.turnRate = 0.0F;
             this.onChangeRoatDirX = 0.0F;
@@ -65,7 +68,6 @@ public class Gravity {
                 entity.fallDistance *= config.oppositeFallDistanceMultiplier;
             else entity.fallDistance *= config.otherFallDistanceMultiplier;
         }
-
         if (entity.world.isClient) {
             Vec3d newEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
             Vec3d eyesDiff = newEyePos.subtract(this.oldEyePos);

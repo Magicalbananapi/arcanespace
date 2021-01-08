@@ -3,6 +3,7 @@ package io.github.magicalbananapie.arcanespace.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
 import io.github.magicalbananapie.arcanespace.ArcaneSpace;
+import io.github.magicalbananapie.arcanespace.block.ArcaneBlocks;
 import io.github.magicalbananapie.arcanespace.item.ArcaneItems;
 import io.github.magicalbananapie.arcanespace.util.ArcaneTags;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -37,12 +38,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
     @Unique private static final ArcaneConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig();
-    @Unique private static final Identifier PIXELATED_GLOW = new Identifier(ArcaneSpace.MOD_ID,"textures/gui/effect/glow_low.png");
-    @Unique private static final Identifier GLOW = new Identifier(ArcaneSpace.MOD_ID,"textures/gui/effect/glow.png");
+    @Unique private static final Identifier PIXELATED_GLOW = new Identifier(ArcaneSpace.MOD_ID,"textures/item/effect/glow_low.png");
+    @Unique private static final Identifier GLOW = new Identifier(ArcaneSpace.MOD_ID,"textures/item/effect/glow.png");
 
     @Shadow @Final private ItemModels models;
-
-    @Shadow @Final private ItemColors colorMap;
 
     @Shadow protected abstract void renderBakedItemModel(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrices, VertexConsumer vertexConsumer4);
 
@@ -63,7 +62,8 @@ public abstract class ItemRendererMixin {
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 
-                final float offset = 1 / 8F; //20 Pixels (16+(1/8)*16*2) Fun Fact: this fits perfectly inside item frames
+                //1/2 is 32, 1/4 is 24, 1/8 is 20, 1/16 is 18, 1/32 is 16
+                final float offset = 1 / 4F; //20 Pixels (16+(1/8)*16*2) Fun Fact: this fits perfectly inside item frames
                 MinecraftClient.getInstance().getTextureManager().bindTexture(config.visualConfig.pixelatedGlow ? PIXELATED_GLOW : GLOW);
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
@@ -75,9 +75,6 @@ public abstract class ItemRendererMixin {
                 buffer.vertex(matrix4f, 1f + offset, 0f - offset, 0.5F).color(r, g, b, 1f).texture(1f, 0f).next();
                 buffer.vertex(matrix4f, 0f - offset, 0f - offset, 0.5F).color(r, g, b, 1f).texture(0f, 0f).next();
                 tessellator.draw();
-
-                //RenderLayer.getOutline() DO LATER
-                //OutlineVertexConsumerProvider
 
                 RenderSystem.enableCull();
                 RenderSystem.enableDepthTest();

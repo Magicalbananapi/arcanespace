@@ -37,7 +37,7 @@ public class BlockGravityPanel extends FacingBlock implements Waterloggable {
     //FIXME: These are supposed to act kind of like glass where the inner sides of connecting blocks aren't visible,
     // however this isn't happening so I need to figure out why (Even when Material type is GLASS)
     public BlockGravityPanel() {
-        super(FabricBlockSettings.of(Material.STONE).nonOpaque().strength(5.0F,9.0F).requiresTool().breakByTool(FabricToolTags.PICKAXES, 1));
+        super(FabricBlockSettings.of(Material.GLASS).nonOpaque().strength(5.0F,9.0F).requiresTool().breakByTool(FabricToolTags.PICKAXES, 1));
         setDefaultState(getDefaultState().with(FACING, Direction.UP).with(WATERLOGGED, false)); //Starts Facing UP, but with DOWN gravity
     }
 
@@ -88,11 +88,11 @@ public class BlockGravityPanel extends FacingBlock implements Waterloggable {
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         switch(type) {
             case LAND:
-                return false;
+                return true;
             case WATER:
                 return world.getFluidState(pos).isIn(FluidTags.WATER);
             case AIR:
-                return false;
+                return true;
             default:
                 return false;
         }

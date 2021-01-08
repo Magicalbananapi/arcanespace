@@ -3,6 +3,7 @@ package io.github.magicalbananapie.arcanespace.mixin;
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
 import io.github.magicalbananapie.arcanespace.effect.ArcaneEffects;
 import io.github.magicalbananapie.arcanespace.util.ArcaneDamageSource;
+import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
 import io.github.magicalbananapie.arcanespace.util.LivingEntityAccessor;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.block.BlockState;
@@ -14,6 +15,7 @@ import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,6 +32,31 @@ public abstract class LivingEntityMixin implements LivingEntityAccessor {
     @Unique @Override public int getFreezeTime() { return freezeTime; }
     @Unique @Override public void setFreezeTime(int freezeTime) { this.freezeTime = freezeTime; }
 
+    /*@Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;add(DDD)Lnet/minecraft/util/math/Vec3d;"))
+    public Vec3d add(Vec3d vec3d, double x, double y, double z) {
+        //((Entity)(Object)this).velocityDirty=true;
+        switch(((EntityAccessor)this).getGravity().getGravityDirection()) {
+            case UP:   return vec3d.add( x, -y,  z);
+            case NORTH:return vec3d.add( x,  z,  y);
+            case SOUTH:return vec3d.add( x,  z, -y);
+            case EAST: return vec3d.add(-y,  x,  z);
+            case WEST: return vec3d.add( y,  x,  z);
+            default:   return vec3d.add( x,  y,  z);
+        }
+    }
+
+    @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(DDD)V", ordinal = 2))
+    public void setVelocity(LivingEntity livingEntity, double x, double y, double z) {
+        //((Entity)(Object)this).velocityDirty=true;
+        switch(((EntityAccessor)this).getGravity().getGravityDirection()) {
+            case UP:   livingEntity.setVelocity( x, -y,  z);
+            case NORTH:livingEntity.setVelocity( x,  z,  y);
+            case SOUTH:livingEntity.setVelocity( x,  z, -y);
+            case EAST: livingEntity.setVelocity(-y,  x,  z);
+            case WEST: livingEntity.setVelocity( y,  x,  z);
+            default:   livingEntity.setVelocity( x,  y,  z);
+        }
+    }*/
 
     @Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isFireImmune()Z"))
     private void baseTick(CallbackInfo ci) {
