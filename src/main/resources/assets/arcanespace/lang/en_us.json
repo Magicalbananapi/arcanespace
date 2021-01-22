@@ -98,6 +98,13 @@
   "text.autoconfig.arcanespace.option.visualConfig.pixelatedGlow": "Pixelated Glow",
   "text.autoconfig.arcanespace.option.visualConfig.pixelatedGlow.@Tooltip": "Determines if the glow effect is pixelated.",
 
+  "text.autoconfig.arcanespace.option.gravityConfig": "Gravity Configuration",
+
+  "text.autoconfig.arcanespace.option.gravityConfig.tickLength": "Tick Length",
+  "text.autoconfig.arcanespace.option.gravityConfig.tickLength.@Tooltip[0]": "[20] by Default.",
+  "text.autoconfig.arcanespace.option.gravityConfig.tickLength.@Tooltip[1]": "Determines tick length of gravity.",
+  "text.autoconfig.arcanespace.option.gravityConfig.tickLength.@Tooltip[2]": "[-1] will make gravity permanent.",
+
   "text.autoconfig.arcanespace.option.debugMode": "Debug Mode",
   "text.autoconfig.arcanespace.option.debugMode.@Tooltip": "Enables debug mode, you don't need this.",
 

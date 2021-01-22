@@ -1,7 +1,6 @@
 package io.github.magicalbananapie.arcanespace.mixin;
 
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
-import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
 import io.github.magicalbananapie.arcanespace.util.Gravity;
 import io.github.magicalbananapie.arcanespace.util.Vec3dHelper;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -34,7 +33,7 @@ public abstract class GameRendererMixin {
     @Unique private static final ArcaneConfig config = AutoConfig.getConfigHolder(ArcaneConfig.class).getConfig();
 
     //TODO: Move this into an event (Probably after it is working), example in CameraOverhaul
-    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V", shift = At.Shift.BEFORE))
+    /*@Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V", shift = At.Shift.BEFORE))
     private void PostCameraUpdate(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
         Entity cameraEntity = client.getCameraEntity();
@@ -42,13 +41,13 @@ public abstract class GameRendererMixin {
         // however there are likely crashes in odd cases, and TODO: THE ACTUAL CAMERA ROTATIONS DON'T WORK IN SPECTATOR
         if (cameraEntity instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity)cameraEntity;
-            Gravity gravity = ((EntityAccessor)entity).getGravity();
+            //Gravity gravity = entity.getGravity();
 
             double interpolatedPitch = camera.getPitch() % 360;
             double interpolatedYaw = (camera.getYaw() + 180.0f) % 360;
 
             double[] relativePitchYaw = Vec3dHelper.getPrecisePitchAndYawFromVector(
-                    gravity.getGravityDirection().adjustLookVec(
+                    gravity.getGravityDirection()/*.getOpposite()*//*.adjustLookVec(
                             Vec3dHelper.getPreciseVectorForRotation(interpolatedPitch, interpolatedYaw)));
 
             double relativeInterpolatedPitch = relativePitchYaw[PITCH] % 360;
@@ -131,8 +130,8 @@ public abstract class GameRendererMixin {
             matrix.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion((float)relativeInterpolatedYaw));
 
             // 3: Now that our look direction is effectively 0 yaw and 0 pitch, perform the rotation specific for this gravity
-            Vec3i vars = gravity.getGravityDirection().getOpposite().getCameraTransformVars();
-            int x = vars.getX(); if (x != 0) matrix.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(x));
+            Vec3i vars = gravity.getGravityDirection()/**///.getOpposite()/**/.getCameraTransformVars();
+            /*int x = vars.getX(); if (x != 0) matrix.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(x));
             int y = vars.getY(); if (y != 0) matrix.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(y));
             int z = vars.getZ(); if (z != 0) matrix.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(z));
 
@@ -161,5 +160,5 @@ public abstract class GameRendererMixin {
                 matrix.multiply(Vector3f.NEGATIVE_X.getDegreesQuaternion(camera.getPitch()));
             }//
         }
-    }
+    }*/
 }

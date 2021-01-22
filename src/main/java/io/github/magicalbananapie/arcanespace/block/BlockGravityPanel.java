@@ -1,6 +1,5 @@
 package io.github.magicalbananapie.arcanespace.block;
 
-import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
 import io.github.magicalbananapie.arcanespace.util.Gravity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -17,7 +16,6 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -101,10 +99,10 @@ public class BlockGravityPanel extends FacingBlock implements Waterloggable {
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) { builder.add(FACING, WATERLOGGED); }
 
-    @Override
+    /*@Override
     @SuppressWarnings("deprecation")
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        Gravity gravity = ((EntityAccessor)entity).getGravity();
+        /*Gravity gravity = ((EntityAccessor)entity).getGravity();
         //NOTICE: Until I can get block to entity collision working, this isn't a bug, its the feature of
         // every gravity panel block creating a 1x1x1 block G-Field towards it. :)
         entity.fallDistance = 0.0F;
@@ -117,6 +115,6 @@ public class BlockGravityPanel extends FacingBlock implements Waterloggable {
             case NORTH:{ gravity.setGravityDirection(entity, 3, false); break; }
             case WEST: { gravity.setGravityDirection(entity, 4, false); break; }
             case EAST: { gravity.setGravityDirection(entity, 5, false); break; }
-        }
-    }
+        }*/
+    //}*/
 }

@@ -5,8 +5,6 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.magicalbananapie.arcanespace.ArcaneSpace;
-import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
 import io.github.magicalbananapie.arcanespace.util.Gravity;
 import io.github.magicalbananapie.arcanespace.util.GravityEnum;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -25,7 +23,7 @@ import java.util.Collections;
 
 //TODO: Clean up code a bit and merge some methods, remove redundancies, etc. However low priority as it works.
 public class GravityCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    /*public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> literal = CommandManager.literal("gravity")
                 .requires((serverCommandSource) -> serverCommandSource.hasPermissionLevel(2));
 
@@ -61,7 +59,7 @@ public class GravityCommand {
                     "\nPrevious Gravity: "+((EntityAccessor)entity).getGravity().getPreviousDirection().getName()+
                     "\nGravity Strength: "+((EntityAccessor)entity).getGravity().getGravityStrength()+
                     "\nTransition Ticks: "+((EntityAccessor)entity).getGravity().getTimeout()/*+
-                    "\nGravity Length: "+((EntityAccessor)entity).getGravity().get()*/), false);
+                    "\nGravity Length: "+((EntityAccessor)entity).getGravity().get()*//*), false);
             ++i;
         } return i;
     }
@@ -102,5 +100,5 @@ public class GravityCommand {
                 }
             } ++i;
         } return i;
-    }
+    }*/
 }

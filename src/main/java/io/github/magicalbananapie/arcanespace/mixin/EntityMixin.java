@@ -1,14 +1,11 @@
 package io.github.magicalbananapie.arcanespace.mixin;
 
-import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
 import io.github.magicalbananapie.arcanespace.util.Gravity;
 import io.github.magicalbananapie.arcanespace.util.Vec3dHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -20,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.PITCH;
 import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.YAW;
@@ -31,7 +26,7 @@ import static io.github.magicalbananapie.arcanespace.util.Vec3dHelper.YAW;
 //NOTICE: Mysteryem's PatchEntityPlayerSP and PathEntityPlayerSubClass also has some essential methods I was missing
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements EntityAccessor {
+public abstract class EntityMixin/* implements EntityAccessor*/ {
     @Shadow public float yaw;
     @Shadow public float pitch;
     @Shadow public float prevYaw;
@@ -39,26 +34,45 @@ public abstract class EntityMixin implements EntityAccessor {
     @Shadow private Entity vehicle;
     @Shadow private EntityDimensions dimensions;
     @Shadow public abstract void setBoundingBox(Box boundingBox);
-    @Shadow public abstract void setPos(double x, double y, double z);
     @Shadow protected abstract Box getBoundingBox();
     @Shadow @Final private EntityType<?> type;
+    @Shadow public abstract void setVelocity(double x, double y, double z);
+    @Shadow public abstract void setVelocity(Vec3d velocity);
+    @Shadow public abstract Vec3d getVelocity();
 
     //TODO: FromTag, ToTag,
 
     @Shadow private Vec3d pos;
+    @Shadow private Box entityBounds;
     //Direction defaults to DOWN if not set correctly, should help compatibility and reduce bugs the tiniest bit.
     // Also, Gravity Strength 0 is Zero-G: can't fall, jump, or move by walking and must use items to move.
     // Negative gravity strength will push away affected entities without changing direction;
     // This is functionally identical as far as physics go, but entity and model rotation is opposite.
     private Gravity gravity = new Gravity();
 
+    /**
+     * @author Magicalbananapie
+     * @return Rotated block pos to account for gravity
+     * return means no break
+     */
+    /*@Overwrite
+    public BlockPos getVelocityAffectingPos() {
+        switch(this.getGravity().getGravityDirection()) {
+            case UP:   return new BlockPos(this.pos.x, this.entityBounds.maxY + 0.5000001D, this.pos.z); //+
+            case WEST: return new BlockPos(this.pos.x, this.pos.y, this.entityBounds.minZ - 0.5000001D); //-
+            case EAST: return new BlockPos(this.pos.x, this.pos.y, this.entityBounds.maxZ + 0.5000001D); //+
+            case SOUTH:return new BlockPos(this.entityBounds.maxX + 0.5000001D, this.pos.y, this.pos.z); //+
+            case NORTH:return new BlockPos(this.entityBounds.minX - 0.5000001D, this.pos.y ,this.pos.z); //-
+            default:   return new BlockPos(this.pos.x, this.entityBounds.minY - 0.5000001D, this.pos.z); //-
 
+        }
+    }*/
 
-    @Override
+    /*@Override
     public Gravity getGravity() { return gravity; }
 
     @Override
-    public void setGravity(Entity entity, Gravity gravity) { this.gravity = gravity; }
+    public void setGravity(Entity entity, Gravity gravity) { this.gravity = gravity; }*/
 
     //Voodoo that probably does nothing ;-;
     /*@Redirect(method = "updatePosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityDimensions;method_30231(DDD)Lnet/minecraft/util/math/Box;"))
@@ -74,15 +88,20 @@ public abstract class EntityMixin implements EntityAccessor {
      * place for each gravity direction, I felt like this was a better solution that was unlikely to
      * cause many conflicts, but I can
      */
-    @Redirect(method = "moveToBoundingBoxCenter", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setPos(DDD)V"))
+    /*@Redirect(method = "moveToBoundingBoxCenter", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setPos(DDD)V"))
     public void moveToBoundingBoxCenter(Entity entity, double x, double y, double z) {
         ((EntityAccessor)this).getGravity().getGravityDirection().resetPositionToBB((Entity)(Object)this);
-    }
+    }*/
 
-    @Inject(method = "updatePosition", at = @At(value = "TAIL"))
+    /*@Inject(method = "updatePosition", at = @At(value = "TAIL"))
     public void updatePosition(double x, double y, double z, CallbackInfo ci) {
-        setBoundingBox(this.getGravity().getGravityDirection().getOpposite().getGravityAdjustedAABB((Entity)(Object)this));
-    }
+        //this method is the one that actually changes the bounding boxes
+        this.setBoundingBox(this.getGravity().getGravityDirection().getOpposite().getGravityAdjustedAABB((Entity)(Object)this));
+        //double heightExpansion = (this.dimensions.height - entityDimensions.height) / 2d;
+        //double widthExpansion = (this.dimensions.width - entityDimensions.width) / 2d;
+        //this.setBoundingBox(box.expand(widthExpansion, heightExpansion, widthExpansion).offset(0, heightExpansion, 0));
+        //this.setBoundingBox(gravity.getGravityDirection().getGravityAdjustedAABB((Entity)(Object)this));
+    }*/
 
     //@Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V", ordinal = 0))
     //public void setBB(Entity entity, Box boundingBox) {}
@@ -94,48 +113,75 @@ public abstract class EntityMixin implements EntityAccessor {
      * @param pose EntityPose
      * @param dimensions EntityDimensions
      */
-    @Inject(method = "getEyeHeight(Lnet/minecraft/entity/EntityPose;Lnet/minecraft/entity/EntityDimensions;)F", at = @At(value = "HEAD"), cancellable = true)
+    /*@Inject(method = "getEyeHeight(Lnet/minecraft/entity/EntityPose;Lnet/minecraft/entity/EntityDimensions;)F", at = @At(value = "HEAD"), cancellable = true)
     public void getEyeHeight(EntityPose pose, EntityDimensions dimensions, CallbackInfoReturnable<Float> cir) {
         switch(gravity.getGravityDirection()) {
-            default: cir.setReturnValue(0F);
             case UP: cir.setReturnValue(-dimensions.height * 0.85F);
             case DOWN: cir.setReturnValue(dimensions.height * 0.85F);
+            default: cir.setReturnValue(0F);
         }
-    }
+    }*/
 
     /**
      * Changes Dimensions to account for gravity... theoretically
      *
      * @author Magicalbananapie
-     * @param pose EntityPose
+     * @param //pose EntityPose
      */
-    @Inject(method = "getDimensions", at = @At(value = "HEAD"), cancellable = true)
+    /*@Inject(method = "getDimensions", at = @At(value = "HEAD"), cancellable = true)
     public void getDimensions(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
         switch(gravity.getGravityDirection()) {
             case UP: cir.setReturnValue(this.type.getDimensions().scaled(0.5F));
             case DOWN: cir.setReturnValue(this.type.getDimensions().scaled(0.5F));
             default: cir.setReturnValue(this.type.getDimensions().scaled(0.5F));
         }
-    }
+    }*/
 
-    @Inject(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    @Shadow @Final public abstract double getX();
+    @Shadow @Final public abstract double getY();
+    @Shadow @Final public abstract double getZ();
+
+    @Shadow public abstract float getHeight();
+
+    @Shadow public abstract float getWidth();
+
+    @Shadow public abstract void setPos(double x, double y, double z);
+
+    @Shadow public abstract void move(MovementType type, Vec3d movement);
+
+    //Old method places box above feet, this could cause problems, however
+    /*@Inject(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+    public void setBB(CallbackInfo ci, EntityDimensions entityDimensions, EntityPose entityPose, EntityDimensions entityDimensions2, double d) {
+        double d2 = (double)entityDimensions.height / 2d;
+        this.setBoundingBox(new Box(this.getX() - d, this.getY() - d2, this.getZ() - d, this.getX() + d, this.getY() + d2, this.getZ() + d));
+    }*/
+
+    /*@Inject(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
     public void setBB(CallbackInfo ci, EntityDimensions entityDimensions, EntityPose entityPose, EntityDimensions entityDimensions2, Box box) {
-        double heightExpansion = (this.dimensions.height - entityDimensions.height) / 2d;
-        double widthExpansion = (this.dimensions.width - entityDimensions.width) / 2d;
+        double heightExpansion = (getHeight() - entityDimensions.height) / 2d;
+        double widthExpansion = (getWidth() - entityDimensions.width) / 2d;
         double[] d = this.gravity.getGravityDirection().adjustXYZValuesMaintainSigns(widthExpansion, heightExpansion, widthExpansion);
         double[] d2 = this.gravity.getGravityDirection().adjustXYZValues(0, heightExpansion, 0);
+        //Box bb = new Box(this.getBoundingBox().minX, this.getBoundingBox().minY, this.getBoundingBox().minZ, this.getBoundingBox().maxX, this.getBoundingBox().maxY, this.getBoundingBox().maxZ);
         this.setBoundingBox(box.expand(d[0], d[1], d[2]).offset(d2[0], d2[1], d2[2]));
-    }
+        //this.setBoundingBox(gravity.getGravityDirection().getGravityAdjustedAABB((Entity)(Object)this));
+        //if(!bb.equals(this.getBoundingBox())) this.move(MovementType.SELF,new Vec3d(0, 1, 0));
+        //Activates on pose change, which is the effect I want to replicate, I suggest studying how poses work
 
-    //IDK WHAT TO DO HERE AAAHHHHHHHHHH, THIS IS DEFINITELY GOING TO BREAK SOMETHING
-    @Redirect(method = "calculateDimensions", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setBoundingBox(Lnet/minecraft/util/math/Box;)V"/*, ordinal = 1*/))
-    public void setBB(Entity entity, Box boundingBox) {/*DO NOTHING*/}
+        //this.setBoundingBox(box.expand(d[0], d[1], d[2]).offset(d2[0], d2[1], d2[2]));
+
+    }*/ //also got rid of old set bb
+
+    //@ModifyArg(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;squaredHorizontalLength(Lnet/minecraft/util/math/Vec3d;)D"))
+    //private Vec3d onTickMovementGetVelocityProxy(Vec3d velocity)
+    //{
+    //}
 
     @Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;tickNetherPortal()V"))
     private void baseTick(CallbackInfo ci) {
         if(this.gravity.getTimeout() > 0) this.gravity.tickTimeout();
         if(this.gravity.getLength() > 0) this.gravity.tickLength();
-        else this.gravity.revertGravityDirection((Entity)(Object)this);
+        else if(!this.gravity.getGravityDirection().equals(this.gravity.getDefaultDirection()))this.gravity.revertGravityDirection((Entity)(Object)this);
     }
 
     //@Shadow public void method_30634(double x, double y, double z) {}
@@ -145,7 +191,7 @@ public abstract class EntityMixin implements EntityAccessor {
      * - I'm theoretically using this to sync mouse and camera
      * - Seems to half-break inverted mouse setting :(
      */
-    @Environment(EnvType.CLIENT)
+    /*@Environment(EnvType.CLIENT)
     @Overwrite public void changeLookDirection(double yaw, double pitch) {
         final double[] relativePitchYaw = Vec3dHelper.getPrecisePitchAndYawFromVector(
                 this.getGravity().getGravityDirection().getOpposite().adjustLookVec(
@@ -187,7 +233,7 @@ public abstract class EntityMixin implements EntityAccessor {
         this.prevYaw += absoluteYawChange;
         this.prevPitch = MathHelper.clamp(this.prevPitch, -90.0F, 90.0F);
         if (this.vehicle != null) this.vehicle.onPassengerLookAround((Entity)(Object)this);
-    }
+    }*/
 
     //NOTICE: Call below in whatever place checks data.
     // if(config.gravityStrength==0) setNoGravity(true);

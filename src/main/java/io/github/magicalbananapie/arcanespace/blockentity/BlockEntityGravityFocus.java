@@ -1,18 +1,9 @@
 package io.github.magicalbananapie.arcanespace.blockentity;
 
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
-import io.github.magicalbananapie.arcanespace.util.EntityAccessor;
-import io.github.magicalbananapie.arcanespace.util.Gravity;
-import io.github.magicalbananapie.arcanespace.util.GravityEnum;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Tickable;
-
-import net.minecraft.util.math.Box;
-
-import java.util.List;
 
 public class BlockEntityGravityFocus extends BlockEntity implements Tickable { //NOTICE: Tickable due to G-Field checks
     private int gFieldSize;

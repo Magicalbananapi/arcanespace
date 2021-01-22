@@ -3,6 +3,8 @@ package io.github.magicalbananapie.arcanespace.util;
 import io.github.magicalbananapie.arcanespace.ArcaneConfig;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.MovementType;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -59,15 +61,28 @@ public class Gravity {
         this.hasTransitionAngle = false;
         entity.setBoundingBox(newDirection.getOpposite().getGravityAdjustedAABB(entity));
         entity.moveToBoundingBoxCenter();
-        if (this.previousDirection != newDirection) {
-            this.prevTurnRate = this.turnRate = 0.0F;
-            this.onChangeRoatDirX = 0.0F;
-            this.onChangeRoatDirY = 0.0F;
-            this.onChangeRoatDirZ = 0.0F;
-            if (this.previousDirection.getOpposite() == newDirection)
-                entity.fallDistance *= config.oppositeFallDistanceMultiplier;
-            else entity.fallDistance *= config.otherFallDistanceMultiplier;
-        }
+
+        //needs correct eye height to work
+        Box bb = entity.getBoundingBox();
+        double y = (bb.maxY-bb.minY) / 2;
+        switch (previousDirection) {
+            case DOWN: entity.setBoundingBox(new Box(bb.minX, bb.minY + y, bb.minZ, bb.maxX, bb.maxY + y, bb.maxZ)); break;
+            case UP:   entity.setBoundingBox(new Box(bb.minX, bb.minY - y, bb.minZ, bb.maxX, bb.maxY - y, bb.maxZ)); break;
+            default: switch (newDirection) {
+                case DOWN: entity.setBoundingBox(new Box(bb.minX, bb.minY - y, bb.minZ, bb.maxX, bb.maxY - y, bb.maxZ)); break;
+                case UP:   entity.setBoundingBox(new Box(bb.minX, bb.minY + y, bb.minZ, bb.maxX, bb.maxY + y, bb.maxZ)); break;
+            } break;
+        } entity.moveToBoundingBoxCenter();
+
+        this.prevTurnRate = this.turnRate = 0.0F;
+        this.onChangeRoatDirX = 0.0F;
+        this.onChangeRoatDirY = 0.0F;
+        this.onChangeRoatDirZ = 0.0F;
+
+        if (this.previousDirection.getOpposite() == newDirection)
+            entity.fallDistance *= config.oppositeFallDistanceMultiplier;
+        else entity.fallDistance *= config.otherFallDistanceMultiplier;
+
         if (entity.world.isClient) {
             Vec3d newEyePos = entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
             Vec3d eyesDiff = newEyePos.subtract(this.oldEyePos);

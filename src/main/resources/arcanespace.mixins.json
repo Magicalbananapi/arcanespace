@@ -4,11 +4,8 @@
   "package": "io.github.magicalbananapie.arcanespace.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "EntityMixin",
-    "LivingEntityMixin"
   ],
   "client": [
-    "GameRendererMixin",
     "InGameHudMixin",
     "ItemRendererMixin"
   ],

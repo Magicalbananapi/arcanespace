@@ -108,6 +108,8 @@ public enum GravityEnum {
         this.shiftSneakZ = argShiftSneakZ;
     }
 
+
+
     public int getId() {
         return this.id;
     }

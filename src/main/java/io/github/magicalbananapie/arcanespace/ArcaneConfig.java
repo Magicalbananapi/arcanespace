@@ -1,6 +1,7 @@
 package io.github.magicalbananapie.arcanespace;
 
 import io.github.magicalbananapie.arcanespace.util.Gravity;
+import io.github.magicalbananapie.gravitylib.GravityConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
@@ -96,6 +97,10 @@ public class ArcaneConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public boolean pixelatedGlow = false;
     }
+
+    //See GravityLib for full implementation
+    @ConfigEntry.Gui.CollapsibleObject
+    public GravityConfig gravityConfig = new GravityConfig();
 
     @ConfigEntry.Gui.Tooltip
     public boolean debugMode = false;
